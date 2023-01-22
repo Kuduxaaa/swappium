@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group. Enjoy building your API!
+|
+*/
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+
+Route::group(['prefix' => 'whitebit', 'namespace' => 'App\Http\Controllers\Api'], function () {
+    Route::get('/assets', 'WhitebitController@assets')->name('api.whitebit.assets');
+    Route::get('/assets/keys', 'WhitebitController@assetKeys')->name('api.whitebit.assets.keys');
+    Route::get('/tickers', 'WhitebitController@tickers')->name('api.whitebit.tickers');
+    Route::get('/ticker/{ticker}', 'WhitebitController@getTicker')->name('api.whitebit.ticker');
+    Route::get('/orderbook/{market}', 'WhitebitController@orderBook')->name('api.whitebit.orderbook');
+    Route::get('/trades/recent/{market}', 'WhitebitController@recentTrades')->name('api.whitebit.recentTrades');
+    Route::get('/fee', 'WhitebitController@getFees')->name('api.whitebit.fee');
+    Route::get('/server/time', 'WhitebitController@getServerTime')->name('api.whitebit.fee');
+    Route::get('/server/status', 'WhitebitController@getServerStatus')->name('api.whitebit.status');
+    Route::get('/markets', 'WhitebitController@getMarkets')->name('api.whitebit.markets');
+    Route::get('/markets/collateral', 'WhitebitController@getCollateralMarkets')->name('api.whitebit.collateral.markets');
+    Route::get('/markets/futures', 'WhitebitController@getFutureMarkets')->name('api.whitebit.future.markets');
+    Route::get('/test', 'WhitebitController@test')->name('test');
+});

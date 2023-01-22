@@ -1,0 +1,252 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600&display=swap');
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css");
+
+:root {
+    --color-primary: #007bff;
+    --color-primary-dark: #214992;
+    --dark-blue: #062763;
+    --light-blue: #ecf1f7;
+    --text-color: #fff;
+    --text-color-secondary: #859ab5;
+}
+
+a {
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+* {
+    box-sizing: border-box;
+    transition: .3s all;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
+    color: var(--text-color);
+}
+
+.flex {
+    display: flex;
+}
+
+.flex.justify-between {
+    justify-content: space-between;
+}
+
+.flex.justify-around { 
+    justify-content: space-around;
+}
+
+.navigation {
+    width: 100%;
+    background-color: var(--color-primary);
+    color: var(--text-color)
+}
+
+.navigation .logo {
+    padding: 12px;
+}
+
+.navigation .logo .logo-image {
+    width: 55px;
+}
+
+.navigation .logo .logo-text {
+    font-size: 28px;
+    line-height: 54px;
+    margin-left: 12px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-secondary {
+    color: var(--text-color-secondary) !important;
+}
+
+h1, .h1 {
+    font-size: 2.5rem;
+    font-weight: 400;
+}
+
+.exchange {
+    width: 100%;
+    height: calc(100vh - 200px);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: top -80px left;
+}
+
+.form-wrapper {
+    background-color: #fff;
+    max-width: 600px;
+    width: 100%;
+    border-radius: 32px;
+    margin: 20px auto;
+    padding: 30px;
+}
+
+form .field {
+    margin: 18px auto;
+}
+
+.exchange-title p {
+    margin-top: 8px;
+}
+
+.input-group {
+    display: flex;
+    background-color: var(--light-blue);
+    color: var(--text-color-secondary);
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    height: 62px;
+}
+
+.input-group input.input {
+    text-align: right;
+    color: #212529;
+    font-size: 20px;
+    font-weight: 600;
+    background-color: transparent;
+    border: none;
+    padding: 12px 20px;
+    width: 100%;
+}
+
+.select-menu {
+    border: none;
+    padding: 20px 16px;
+    border-left: 2px solid white;
+    background-color: var(--light-blue);
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    width: 219px;
+    height: 62px;
+}
+
+.input-group label {
+    color: #3f5878;
+    font-size: 14px;
+    min-width: 66px;
+    line-height: 64px;
+    margin-left: 30px;
+}
+
+
+.input-group input.input:focus {
+    outline: none;
+}
+
+.bg-bubble {
+    background-color: var(--dark-blue);
+    background-image: url(../img/bg-bubbles.svg);
+}
+
+.exchange-title {
+    padding-top: 100px;
+    margin-bottom: 40px;
+}
+
+.container {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@media (min-width: 768px) {
+    .container {
+        width: 750px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        width: 970px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        width: 1170px;
+    }
+}
+
+.btn {
+    width: 200px;
+    padding: 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0px 2px 10px #0000001a;
+}
+
+.btn.btn-primary {
+    background-color: var(--color-primary);
+    border: 1px solid var(--text-color-secondary);
+    color: var(--text-color);
+    font-size: 17px;
+    width: 100%;
+}
+
+form button[type=submit] {
+    margin-top: 12px;
+}
+
+@media only screen and (max-width: 771px) {
+    p.logo-text {
+        display: none;
+    }
+
+    .nav-wrapper {
+        width: 100% !important;
+    }
+
+    .footer-body .flex {
+        display: block;
+    }
+
+    .footer-body .links-wrapper:nth-child(1) .links {
+        margin-bottom: 40px;
+    }
+}
+
+footer {
+    width: 100%;
+    background-color: #010e27;
+}
+
+.footer-body {
+    padding: 50px;
+}
+
+.footer-bottom {
+    background-color: #0b172f;
+    padding: 21px;
+    text-align: center;
+}
+
+.links-wrapper {
+    margin-right: 95px;
+}
+
+.links-wrapper label.category {
+    color: var(--text-color-secondary);
+}
+
+.links-wrapper .links {
+    margin-top: 20px;
+}
+
+.links-wrapper .links a {
+    display: block;
+    margin-top: 6px;
+}
+
+.footer-social-links a {
+    font-size: 18px;
+    margin: 0px 10px;
+}
