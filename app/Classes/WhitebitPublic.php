@@ -57,15 +57,12 @@ class WhitebitPublic
     static function getTicker($ticker)
     {
         $tickers = self::getTickers();
+        $tickers_match = preg_grep('/^' . strtoupper($ticker) . '_/', array_keys($tickers));
         $output = [];
 
-        foreach ($tickers as $key => $value) 
+        foreach ($tickers_match as $key) 
         {
-            if ($key == strtoupper($ticker)) 
-            {
-                $output['success'] = true;
-                $output['ticker'] = $value;
-            }
+            $output[$key] = $tickers[$key];
         }
 
         if (count($output) <= 0)

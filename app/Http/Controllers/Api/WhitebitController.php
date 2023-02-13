@@ -75,11 +75,4 @@ class WhitebitController extends Controller
     {
         return WhitebitPublic::getMarkets();
     }
-
-    // ----------------------------------------------------------------
-
-    public function test()
-    {
-        return WhitebitPrivate::test();
-    }
 }   

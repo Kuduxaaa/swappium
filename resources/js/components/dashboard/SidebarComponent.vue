@@ -1,0 +1,251 @@
+<template>
+    <div v-bind:class="(showMenu) ? 'navbar bg-mode' : 'navbar navbar-pd bg-mode'">
+        <div class="menu-toggle" @click="toggleMenu">
+            <i class="bi bi-list"></i>
+        </div>
+
+        <div class="user">
+            <div class="user-info">
+                <span class="user-name">{{ userData.name }}</span>
+            </div>  
+
+            <img src="https://mui.com/static/images/avatar/1.jpg" class="user-image" />
+        </div>
+    </div>
+
+    <div v-bind:class="(showMenu) ? 'sidebar bg-mode' : 'sidebar sidebar-pd bg-mode'">
+        <section class="logo">
+            <router-link to="/">
+                <img src="/assets/img/logo.png" class="logo-image" />
+                <span class="logo-text">
+                    Swappium
+                </span>
+            </router-link>
+        </section>
+
+        <section class="menu-items">
+            <div class="item selected">
+                <router-link to="/app">
+                    <i class="bi bi-grid"></i>
+                    Home
+                </router-link>
+            </div>
+
+            <div class="item">
+                <a href="/">
+                    <i class="bi bi-shop"></i>
+                    Markets
+                </a>
+            </div>
+
+            <div class="item">
+                <a href="/">
+                    <i class="bi bi-wallet2"></i>
+                    My Wallet
+                </a>
+            </div>
+
+            <div class="item">
+                <a href="#">
+                    <i class="bi bi-journal-text"></i>
+                    Orders
+                </a>
+            </div>
+
+            <div class="item">
+                <a href="/">
+                    <i class="bi bi-person"></i>
+                    Profile
+                </a>
+            </div>
+
+            <div class="item">
+                <a href="/">
+                    <i class="bi bi-gear"></i>
+                    Settings
+                </a>
+            </div>
+        </section>
+
+        <section class="sidebar-footer">
+            <div class="item" @click="logout">
+                <a href="javascript:void[0];">
+                    <i class="bi bi-box-arrow-left"></i>
+                    logout
+                </a>
+            </div>  
+        </section>
+    </div>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            showMenu: true,
+            userData: this.$auth.getUser(),
+        }
+    },
+
+    methods: {
+        toggleMenu() {
+            this.showMenu = !this.showMenu;
+        },
+
+        logout() {
+            this.$auth.logout();
+            this.$router.push('/');
+        }
+    },
+
+    mounted() {
+        this.showMenu = (window.innerWidth >= 600);
+    }
+}
+</script>
+
+<style scoped>
+.sidebar {
+    width: 280px;
+    height: 100vh;
+    position: fixed;
+    background-color: #1F2128;
+    top: 0;
+    left: 0;
+}
+
+.logo {
+    width: 100%;
+    padding: 43px 41px 0px 41px;
+}
+
+.logo a {
+    display: flex;
+    text-decoration: none;
+    width: 205px;
+}
+
+.logo-image {
+    width: 50px;
+    margin-right: 15px;
+    height: 50px;
+}
+
+.logo-text {
+    color: #fff;
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 45px;
+}
+
+.menu-items {
+    margin-top: 28px;
+    height: calc(100vh - 268px);
+    overflow: auto;
+}
+
+.item {
+    margin: 13px 26px;
+    border-radius: 10px;
+}
+
+.item a {
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 12px 18px;
+    display: block;
+    color: #808191;
+}
+
+.item a i {
+    margin-right: 16px;
+    font-size: 1.2rem;
+}
+
+.item.selected {
+    background-color: #191B20;
+}
+
+.item.selected a {
+    color: var(--color-primary);
+}
+
+.item:hover:not(.selected) {
+    background-color: #191B20;
+}
+
+.item:hover:not(.selected) a {
+    color: #fff;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    background-color: #0f0f0f;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.8);
+    width: calc(100% - 280px);
+    margin-left: 280px;
+}
+
+.menu-toggle {
+    font-size: 2rem;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.user-image {
+    width: 40px;
+    border-radius: 50%;
+}
+
+.user {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.user-info {
+    margin-right: 12px;
+}
+
+.sidebar-footer .item {
+    position: fixed;
+    bottom: 20px;
+    width: 241px;
+}
+
+@media only screen and (max-width: 600px) {
+    .sidebar {
+        /* left: -100%; */
+        width: 100%;
+    }
+
+    .navbar {
+        margin-left: 0px;
+        width: 100%;
+    }
+
+    .sidebar-footer .item {
+        width: calc(100% - 42px);
+    }
+}
+
+.navbar-pd {
+    width: 100% !important;
+    margin-left: 0px !important;
+}
+
+.sidebar-pd {
+    left: -100%;
+}
+
+@media only screen and (max-width: 350px) {
+    .user-info {
+        display: none;
+    }
+}
+
+
+</style>
