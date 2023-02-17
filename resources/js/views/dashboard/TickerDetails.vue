@@ -96,9 +96,13 @@ export default {
                 y: [candle[1], candle[3], candle[4], candle[2]]
             };
 
-            this.candles.push(newCandle);
-            this.apchart.updateSeries([{ data: this.candles }]);
-            this.zoomChart(24)
+            if (this.candles[this.candles.length - 1] !== newCandle) {
+                this.candles.push(newCandle);
+                this.apchart.updateSeries([{ data: this.candles }]);
+                this.zoomChart(24);
+
+                console.log(this.candles);
+            }
         },
 
         subscribeWhitebit() {
