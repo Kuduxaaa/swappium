@@ -27,7 +27,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Api', 'middleware' => 'json.r
     Route::group(['prefix' => 'whitebit'], function () {
         Route::get('/assets', 'WhitebitController@assets')->name('api.whitebit.assets');
         Route::get('/assets/keys', 'WhitebitController@assetKeys')->name('api.whitebit.assets.keys');
-        Route::get('/tickers', 'WhitebitController@tickers')->name('a');
+        Route::get('/tickers', 'WhitebitController@tickers')->name('api.whitebit.tickers');
+        Route::get('/tickers/sort', 'WhitebitController@sortedTickers')->name('api.whitebit.sortedTickers');
         Route::get('/ticker/{ticker}', 'WhitebitController@getTicker')->name('api.whitebit.ticker');
         Route::get('/orderbook/{market}', 'WhitebitController@orderBook')->name('api.whitebit.orderbook');
         Route::get('/trades/recent/{market}', 'WhitebitController@recentTrades')->name('api.whitebit.recentTrades');
@@ -37,7 +38,12 @@ Route::group(['namespace' => 'App\Http\Controllers\Api', 'middleware' => 'json.r
         Route::get('/markets', 'WhitebitController@getMarkets')->name('api.whitebit.markets');
         Route::get('/markets/collateral', 'WhitebitController@getCollateralMarkets')->name('api.whitebit.collateral.markets');
         Route::get('/markets/futures', 'WhitebitController@getFutureMarkets')->name('api.whitebit.future.markets');
+        Route::get('/klines', 'WhitebitController@getKlines')->name('api.whitebit.klines');
     });
 
     Route::get('/crypto/prices', 'CoingeckoController@getPrices')->name('api.crypto.prices');
+
+    Route::group(['middleware' => 'auth:sanctum'], function($middleware) {
+        Route::get('/user/balance', 'BalanceController@getBalance')->name('api.user.balance');
+    });
 });

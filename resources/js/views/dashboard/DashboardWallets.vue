@@ -5,7 +5,7 @@
         </aside>
 
         <main>
-            <h1>DashboardOrders</h1>
+            <h1>DashboardWallets</h1>
         </main>
     </div>
 </template>
@@ -16,10 +16,10 @@ import SidebarComponent from '../../components/dashboard/SidebarComponent.vue';
 
 <script>
 export default {
-    name: 'DashboardOrders',
-    components: {
+    name: 'DashboardWallets',
+    components: [
         SidebarComponent
-    }
+    ]
 }
 </script>
 

@@ -6,10 +6,8 @@
 
         <div class="user">
             <div class="user-info">
-                <span class="user-name">{{ userData.name }}</span>
+                <span class="user-name text-bold">${{ userBalance }}</span>
             </div>  
-
-            <img src="https://mui.com/static/images/avatar/1.jpg" class="user-image" />
         </div>
     </div>
 
@@ -24,46 +22,39 @@
         </section>
 
         <section class="menu-items">
-            <div class="item selected">
+            <div v-bind:class="(routePath == '/app') ? 'item selected' : 'item'">
                 <router-link to="/app">
                     <i class="bi bi-grid"></i>
                     Home
                 </router-link>
             </div>
 
-            <div class="item">
-                <a href="/">
+            <div v-bind:class="(routePath == '/app/markets') ? 'item selected' : 'item'">
+                <router-link to="/app/markets">
                     <i class="bi bi-shop"></i>
                     Markets
-                </a>
+                </router-link>
             </div>
 
-            <div class="item">
-                <a href="/">
+            <div v-bind:class="(routePath == '/app/wallets') ? 'item selected' : 'item'">
+                <router-link to="/app/wallets">
                     <i class="bi bi-wallet2"></i>
                     My Wallet
-                </a>
+                </router-link>
             </div>
 
-            <div class="item">
-                <a href="#">
+            <div v-bind:class="(routePath == '/app/orders') ? 'item selected' : 'item'">
+                <router-link to="/app/orders">
                     <i class="bi bi-journal-text"></i>
                     Orders
-                </a>
+                </router-link>
             </div>
 
-            <div class="item">
-                <a href="/">
-                    <i class="bi bi-person"></i>
-                    Profile
-                </a>
-            </div>
-
-            <div class="item">
-                <a href="/">
+            <div v-bind:class="(routePath == '/app/settings') ? 'item selected' : 'item'">
+                <router-link to="/app/settings">
                     <i class="bi bi-gear"></i>
                     Settings
-                </a>
+                </router-link>
             </div>
         </section>
 
@@ -84,6 +75,8 @@ export default {
         return {
             showMenu: true,
             userData: this.$auth.getUser(),
+            userBalance: 0,
+            routePath: this.$route.path
         }
     },
 
@@ -95,11 +88,39 @@ export default {
         logout() {
             this.$auth.logout();
             this.$router.push('/');
+        },
+
+        getBalance() {
+            this.$axios.get('user/balance').then(response => {
+                this.userBalance = response.data.amount;
+                
+            }).catch(response => {
+
+                if (response.response.status == 401) {
+                    this.$snackbar.add({
+                        type: 'error',
+                        text: 'Session expired, Please re-login!'
+                    });
+
+                    this.$auth.logout();
+                    this.$router.push('/auth/login');
+                } else {
+                    if (response.response.data.hasOwnProperty('message')) {
+                        this.$snackbar.add({
+                            type: 'error',
+                            text: response.response.data.message
+                        });
+                    } else {
+                        console.log(response.response);
+                    }
+                }
+            });
         }
     },
 
     mounted() {
         this.showMenu = (window.innerWidth >= 600);
+        this.getBalance();
     }
 }
 </script>
@@ -112,6 +133,7 @@ export default {
     background-color: #1F2128;
     top: 0;
     left: 0;
+    z-index: 999999;
 }
 
 .logo {

@@ -194,6 +194,19 @@ h5,
     color: #fff !important;
 }
 
+.up {
+    color: #68ff52 !important;
+}
+
+.down {
+    color: #e15241 !important;
+}
+
+.wrapper {
+    background-color: var(--dark-light);
+    border-radius: 24px;
+    padding: 30px;
+}
 
 .dashboard main {
     margin-left: 280px;
@@ -211,4 +224,19 @@ h5,
 
 .text-bold {
     font-weight: 600;
+}
+
+
+.table-responsive {
+    border-radius: 14px;
+    background-color: var(--dark-light);
+}
+
+th, td {
+    color: var(--text-color)
+}
+
+tbody, td, tfoot, th, thead, tr {
+    border: 0px solid #E4E4E41C;
+    padding: 28px 30px 28px 30px !important;
 }

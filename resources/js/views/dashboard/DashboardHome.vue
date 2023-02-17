@@ -9,7 +9,7 @@
                 <CoinInfoCard v-for="coin in coins" :coin="coin" class="coin-card" />
             </div>
 
-            <div class="flex no-wrap">
+            <div class="flex no-wrap wex">
                 <QuickExchange class="quick-exchange" />
 
                 <div class="flex wallets-list">
@@ -18,13 +18,12 @@
                     <BalanceCard class="balance-card" currency="ETH" balance="0.34" image="icons/eth_.png" />      
                     <BalanceCard class="balance-card" currency="XRP" balance="0" image="icons/xrp_.png" />      
                 </div> 
-            </div>      
+            </div> 
         </main>
     </div>
 </template>
 
 <script setup>
-import ChartjsComponent from '../../components/ChartjsComponent.vue';
 import SidebarComponent from '../../components/dashboard/SidebarComponent.vue';
 import CoinInfoCard from '../../components/dashboard/CoinInfoCard.vue';
 import QuickExchange from '../../components/dashboard/QuickExchange.vue';
@@ -35,9 +34,7 @@ import BalanceCard from '../../components/dashboard/BalanceCard.vue';
 export default {
     components: {
         SidebarComponent,
-        ChartjsComponent,
         CoinInfoCard,
-        ChartjsComponent,
         QuickExchange,
         BalanceCard
     },
@@ -154,8 +151,17 @@ main {
     main {
         padding: 30px 12px;
     }
+
+    .balance-card {
+        margin-left: 12px;
+    }
 }
 
+@media only screen and (max-width: 963px) {
+    .balance-card {
+        width: calc(50% - 20px) !important;
+    }
+}
 
 @media only screen and (max-width: 1271px) {
     .coin-card {
@@ -164,10 +170,18 @@ main {
     }
 
     .quick-exchange {
-        width: 100%
+        width: calc(100% - 19px);
+    }
+
+    .wex {
+        display: block;
+    }
+
+    .wallets-list {
+        width: 100% !important;
+        flex-wrap: wrap;
     }
 }
-
 
 
 .coin-card {

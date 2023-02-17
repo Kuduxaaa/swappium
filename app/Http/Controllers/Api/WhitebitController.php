@@ -75,4 +75,20 @@ class WhitebitController extends Controller
     {
         return WhitebitPublic::getMarkets();
     }
+
+    public function sortedTickers() {
+        return WhitebitPublic::sortedTickers();
+    }
+
+    public function getKlines(Request $request) {
+        $request->validate([
+            'market' => 'required'
+        ]);
+
+        $market = $request->get('market');
+        $limit = $request->get('limit') ?? 1440;
+        $interval = $request->get('interval') ?? '1h';
+
+        return WhitebitPublic::getKlines($market, $interval, $limit);
+    }
 }   

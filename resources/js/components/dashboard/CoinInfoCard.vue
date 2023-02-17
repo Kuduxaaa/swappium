@@ -16,11 +16,11 @@
             </div>
             <div class="bottom flex">
                 <div class="price">
-                    <p>{{ coin['prices']['last'] }} USD</p>
+                    <p>{{ formatter.format(coin['prices']['last']) }}</p>
                 </div>
 
                 <div class="indicator">
-                    <p>{{ (coin['prices']['last'] - coin['prices']['low']).toFixed(2) }}</p>
+                    <p>{{ formatter.format(coin['prices']['last'] - coin['prices']['low']) }}</p>
                 </div>
             </div>
         </div>
@@ -38,6 +38,15 @@ export default {
             type: Object,
             required: true
         },
+    },
+
+    data() {
+        return {
+            formatter: new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+            }),
+        }
     }
 }
 </script>

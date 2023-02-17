@@ -12,6 +12,11 @@ import Contact from'../views/pages/Contact.vue';
 import NotFound from '../views/errors/NotFound.vue';
 
 import DashboardHome from '../views/dashboard/DashboardHome.vue';
+import DashboardMarkets from '../views/dashboard/DashboardMarkets.vue';
+import DashboardOrders from '../views/dashboard/DashboardOrders.vue';
+import DashboardSettings from '../views/dashboard/DashboardSettings.vue';
+import DashboardWallets from '../views/dashboard/DashboardWallets.vue';
+import TickerDetails from '../views/dashboard/TickerDetails.vue';
 import Auth from "../auth";
 
 
@@ -112,6 +117,51 @@ const routes = [
         }
     },
 
+    {
+        path: '/app/markets',
+        name: 'dashboard.markets',
+        component: DashboardMarkets,
+        meta: {
+            requiresAuth: true
+        }
+    },
+
+    {
+        path: '/app/orders',
+        name: 'dashboard.orders',
+        component: DashboardOrders,
+        meta: {
+            requiresAuth: true
+        }
+    },
+
+    {
+        path: '/app/settings',
+        name: 'dashboard.settings',
+        component: DashboardSettings,
+        meta: {
+            requiresAuth: true
+        }
+    },
+
+    {
+        path: '/app/wallets',
+        name: 'dashboard.wallets',
+        component: DashboardWallets,
+        meta: {
+            requiresAuth: true
+        }
+    },
+
+    {
+        path: '/app/markets/:ticker',
+        name: 'dashboard.ticker',
+        component: TickerDetails,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    
     // Handlers
 
     {

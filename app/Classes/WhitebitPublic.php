@@ -47,6 +47,32 @@ class WhitebitPublic
     }
 
 
+    public static function sortedTickers()
+    {
+        $tickers = self::getTickers();
+        $output = [];
+
+        foreach ($tickers as $key => $ticker) {
+            if (!$ticker['isFrozen']) {
+                $output[$key] = $ticker;
+            }
+        }
+
+        uasort($output, function($a, $b) {
+            return ($a['base_id'] > 0) ? $a['base_id'] - $b['base_id'] : $b['base_id'];
+        });
+
+        return $output;
+    }
+
+
+    public static function getKlines($market, $interval = '1h', $limit = 1440)
+    {
+        $data = self::makeRequest('/api/v1/public/kline?market=' . $market . '&interval=' . $interval . '&limit=' . $limit);
+
+        return json_decode($data, true);
+    }
+
 
     /**
      * This function retrieves a single market pair

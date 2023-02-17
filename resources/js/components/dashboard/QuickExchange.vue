@@ -1,5 +1,5 @@
 <template>
-    <div class="form-wrapper">
+    <div class="wrapper">
         <h3 class="mt-1 text-bold">Crypto exchange</h3>
         <p class="text-secondary">You can quickly exchange cryptocurrency from here</p>
 
@@ -132,11 +132,8 @@ export default {
 </script>
 
 <style scoped>
-.form-wrapper {
-    background-color: var(--dark-light);
+.wrapper {
     width: 100%;
-    border-radius: 24px;
-    padding: 30px;
 }
 
 .btn {
@@ -214,5 +211,19 @@ select {
 
 .ex-form {
     margin-top: 32px;
+}
+
+@media only screen and (max-width: 600px) {
+    label {
+        display: none;
+    }
+
+    input {
+        width: 100% !important;
+    }
+
+    select {
+        max-width: 105px;
+    }
 }
 </style>

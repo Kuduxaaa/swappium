@@ -36,7 +36,7 @@
 
         data() {
             return {
-                isLogedin: null,
+                isLogedin: null
             }
         },
 

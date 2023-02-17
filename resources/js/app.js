@@ -8,6 +8,7 @@ import router from './router/index';
 import axios from 'axios';
 import Auth from './auth';
 import Api from './api';
+import VueLazyLoad from 'vue3-lazyload'
 
 import 'vue3-snackbar/dist/style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -28,5 +29,6 @@ app.config.globalProperties.$auth = auth;
 
 app.use(router);
 app.use(SnackbarService);
+app.use(VueLazyLoad);
 app.component("vue3-snackbar", Vue3Snackbar);
 app.mount('#app');
