@@ -278,7 +278,7 @@ main {
 }
 
 @media only screen and (max-width: 600px) {
-    main {
+    main  {
         padding: 30px 12px;
     }
 }

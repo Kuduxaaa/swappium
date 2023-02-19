@@ -8,9 +8,9 @@ use App\Models\UserOrders;
 use App\Models\UserWallet;
 use App\Models\UserTransaction;
 
-class UserSevice 
+class UserService 
 {
-    function createUserTransaction($user_id, $ticker, $method, $address,$nonce,$amount)
+    static function createUserTransaction($user_id, $ticker, $method, $address, $nonce, $amount)
     {
         return UserTransaction::create([
             'user_id' => $user_id,

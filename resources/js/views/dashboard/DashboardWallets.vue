@@ -17,9 +17,9 @@ import SidebarComponent from '../../components/dashboard/SidebarComponent.vue';
 <script>
 export default {
     name: 'DashboardWallets',
-    components: [
+    components: {
         SidebarComponent
-    ]
+    }
 }
 </script>
 

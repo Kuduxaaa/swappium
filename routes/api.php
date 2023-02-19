@@ -42,6 +42,11 @@ Route::group(['namespace' => 'App\Http\Controllers\Api', 'middleware' => 'json.r
     });
 
     Route::get('/crypto/prices', 'CoingeckoController@getPrices')->name('api.crypto.prices');
+    
+    // put it in middleware
+    Route::post('/user/balance/deposit', 'BalanceController@deposit')->name('api.user.balance.deposit');
+    Route::get('/user/balance/withdraw', 'BalanceController@withdraw')->name('api.user.balance.withdraw');
+    Route::get('/user/balance/history', 'BalanceController@history')->name('api.user.balance.history');
 
     Route::group(['middleware' => 'auth:sanctum'], function($middleware) {
         Route::get('/user/balance', 'BalanceController@getBalance')->name('api.user.balance');

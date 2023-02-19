@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Models\UserFee;
 use App\Models\UserWallet;
+use App\Classes\UserService;
 use Illuminate\Http\Request;
+use App\Classes\WhitebitPrivate;
+use App\Http\Controllers\Controller;
 
 class BalanceController extends Controller
 {
@@ -27,5 +30,117 @@ class BalanceController extends Controller
             'success' => true,
             'amount' => $wallet->amount,
         ]);
+    }
+
+    public function calculatePercentage($amount, $percentage) 
+    {
+        return $amount - ($amount * ($percentage / 100));
+    }
+    
+
+    public function deposit (Request $request) 
+    {
+        $request->validate([
+            'ticker' => 'required',
+            'amount' => 'required'
+        ]);
+
+        $ticker = $request->get('ticker');
+        $amount = $request->get('amount');
+        $user = $request->user();
+
+        if ($user->role !== 2)
+        {    
+            $userFee = UserFee::where('user_id', $user->id)->first();
+            $fee = ($userFee) ? $userFee->fee : 1;
+
+            $amount = $this->calculatePercentage($amount, $fee);
+        }
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        if ($amount < 10 || $amount > 1500) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Amount must be between 10 and 1500'
+            ]);
+        }
+        
+        $userNameSplitted = explode(' ', $user->name);
+        $userFirstName = $userNameSplitted[0];
+        $userLastName = $userNameSplitted[1];
+        $email = $user->email;
+
+        $link = WhitebitPrivate::getFiatDepositURI(
+            $ticker, 
+            'VISAMASTER', 
+            $amount, 
+            $userFirstName, 
+            $userLastName, 
+            $email
+        );
+
+        $nonce = (string) (int) (microtime(true) * 1000);
+        UserService::createUserTransaction($user->id, $ticker, 'deposit', null, $nonce, $amount);
+
+        return $link;
+    }
+
+    public function withdraw(Request $request) 
+    {
+
+        $request->validate([
+            'ticker' => 'required',
+            'amount' => 'required',
+            'card_number' => 'required',
+        ]);
+
+        $ticker = $request->get('ticker');
+        $amount = $request->get('amount');
+        $card_number = $request->get('card_number');
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        if ($amount < 10 || $amount > 1500) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Amount must be between 10 and 1500'
+            ]);
+        }
+        
+        $userNameSplitted = explode(' ', $user->name);
+        $userFirstName = $userNameSplitted[0];
+        $userLastName = $userNameSplitted[1];
+
+        $responese = WhitebitPrivate::withdrawWithIBAN($ticker, $amount, $card_number, $userFirstName, $userLastName);
+        
+        UserService::createUserTransaction(
+            $user->id, 
+            $ticker, 
+            'withdraw', 
+            $card_number, 
+            (string) (int) (microtime(true) * 1000), 
+            $amount
+        );
+
+        return response()->json([
+            'success' => (count($responese) == 0)
+        ]);
+    }
+
+    public function history()
+    {
+        return WhitebitPrivate::getHistory();
     }
 }
