@@ -24,6 +24,10 @@ class Api {
     getKlines(market, interval='1h', limit=1440) {
         return this.axios.get(`whitebit/klines?market=${market}&interval=${interval}&limit=${limit}`, 'GET').then((response) => { return response.data });;
     }
+
+    getHistory() {
+        return this.axios.get('user/balance/history').then((response) => { return response.data });
+    }
 }
 
 

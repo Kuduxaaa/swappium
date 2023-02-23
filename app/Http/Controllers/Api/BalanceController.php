@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Classes\Helpers;
 use App\Models\UserFee;
 use App\Models\UserWallet;
 use App\Classes\UserService;
@@ -98,12 +99,14 @@ class BalanceController extends Controller
             'ticker' => 'required',
             'amount' => 'required',
             'card_number' => 'required',
+            'phone' => 'required',
         ]);
 
         $ticker = $request->get('ticker');
         $amount = $request->get('amount');
         $card_number = $request->get('card_number');
         $user = $request->user();
+        $phone = $request->get('phone');
 
         if (!$user) {
             return response()->json([
@@ -122,11 +125,12 @@ class BalanceController extends Controller
         $userNameSplitted = explode(' ', $user->name);
         $userFirstName = $userNameSplitted[0];
         $userLastName = $userNameSplitted[1];
+        $email = $user->email;
 
-        $responese = WhitebitPrivate::withdrawWithIBAN($ticker, $amount, $card_number, $userFirstName, $userLastName);
+        $responese = WhitebitPrivate::withdraw($ticker, $amount, $card_number, $userFirstName, $userLastName, $email, $phone);
         
         UserService::createUserTransaction(
-            $user->id, 
+            $user->id,
             $ticker, 
             'withdraw', 
             $card_number, 
@@ -139,8 +143,20 @@ class BalanceController extends Controller
         ]);
     }
 
-    public function history()
+    public function history(Request $request)
     {
-        return WhitebitPrivate::getHistory();
+        $user = $request->user();
+
+        if (!$user)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthenticated'
+            ], 401);
+        }
+        
+        // $uniqueId = Helpers::generateIdentifier($user->email);
+
+        return WhitebitPrivate::getHistory(0, 100);
     }
 }

@@ -29,8 +29,7 @@
                                         <input v-model="password" type="password" placeholder="Password" required="" class="form-control shadow-sm px-4 p-3 text-primary">
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary btn-block mb-2 mt-4 w-100 shadow-sm">Sign in</button>
-
+                                    <button type="submit" class="btn btn-primary btn-block mt-4 w-100 shadow-sm">Sign in</button>
                                     <p class="mt-4 text-center text-secondary">Don't have account yet? <router-link to="/auth/register">Register</router-link></p>
                                 </form>
                             </div>
@@ -48,10 +47,6 @@
 import { ref } from "vue";
 
 export default {
-    setup() {
-        console.log(this);
-    },
-
     data() {
         return {
             email: ref(''),
@@ -109,6 +104,10 @@ export default {
                 return;
             });
         }
+    },
+
+    mounted() {
+        // const accounts = this.$web3.request({ method: "eth_requestAccounts" });
     }
 }
 </script>
@@ -117,6 +116,12 @@ export default {
 .login,
 .image {
   min-height: 100vh;
+}
+
+.btn.btn-primary.metamask.btn-block.mb-2.mt-2.w-100.shadow-sm {
+    background-color: #f5841e !important;
+    font-weight: 500;
+    border: 1px solid #fb953c !important;
 }
 
 .bg-image {

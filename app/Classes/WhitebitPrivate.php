@@ -23,16 +23,6 @@ class WhitebitPrivate extends WhitebitPublic
         return json_decode($response, true);
     }
 
-
-    /*
-      I'm writing to request assistance with a fiat currency withdrawal via the WhiteBIT API. 
-      Specifically, I'm unsure of what information to provide in the "address" field, 
-      as the documentation states that this field is for "wallet address for cryptocurrencies, 
-      identifier/card number for fiat currencies." As I'm looking to withdraw funds in fiat currency, 
-      I'm not sure what to enter in the "address" field. Could you please provide some guidance on 
-      what information to enter in this field for a fiat currency withdrawal?
-    */
-
     static function withdrawRequest(
         $ticker,
         $amount,
@@ -70,24 +60,25 @@ class WhitebitPrivate extends WhitebitPublic
     }
 
 
-    static function withdrawWithIBAN($ticker, $amount, $iban, $beneficiarFirstname, $beneficiarLastname, $provider='VISAMASTER') 
+    static function withdraw($ticker, $amount, $cardNumber, $beneficiarFirstname, $beneficiarLastname, $email, $phone, $provider='VISAMASTER') 
     {
         $endpoint = '/api/v4/main-account/withdraw';
         $nonce = (string) (int) (microtime(true) * 1000);
+        $uniqueId = Helpers::generateUserUniqueID($email);
 
         $data = [
             'ticker' => $ticker,
             'amount' => (string) $amount,
-            'address' => $iban,
+            'address' => $cardNumber,
 
             'beneficiary' => [
                 'firstName' => $beneficiarFirstname,
                 'lastName' => $beneficiarLastname,
-                'phone' => '+995574058565',
+                'phone' => $phone,
             ],
             
             'provider' => $provider,
-            'uniqueId' => time() . rand(1, 9999),
+            'uniqueId' => $uniqueId,
             'request' => $endpoint,
             'nonce' => $nonce
         ];
@@ -97,7 +88,7 @@ class WhitebitPrivate extends WhitebitPublic
     }
 
 
-    static function getHistory($offset=0, $limit=100) 
+    static function getHistory($offset=0, $limit=100, $uniqueId=null) 
     {
         $endpoint = '/api/v4/main-account/history';
         $nonce = (string) (int) (microtime(true) * 1000);
@@ -108,6 +99,10 @@ class WhitebitPrivate extends WhitebitPublic
             'offset' => $offset,
             'limit' => $limit
         ];
+
+        if ($uniqueId !== null) {
+            $data['uniqueId'] = $uniqueId;
+        }
 
         $response = parent::makeRequest($endpoint, true, $data, 'POST');
         return json_decode($response, true);

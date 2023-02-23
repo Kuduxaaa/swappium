@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
+        <script lang="javascript">
+
+//   ███████╗██╗    ██╗ █████╗ ██████╗ ██████╗ ██╗██╗   ██╗███╗   ███╗
+//   ██╔════╝██║    ██║██╔══██╗██╔══██╗██╔══██╗██║██║   ██║████╗ ████║
+//   ███████╗██║ █╗ ██║███████║██████╔╝██████╔╝██║██║   ██║██╔████╔██║
+//   ╚════██║██║███╗██║██╔══██║██╔═══╝ ██╔═══╝ ██║██║   ██║██║╚██╔╝██║
+//   ███████║╚███╔███╔╝██║  ██║██║     ██║     ██║╚██████╔╝██║ ╚═╝ ██║
+//   ╚══════╝ ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝     ╚═╝     ╚═╝ ╚═════╝ ╚═╝     ╚═╝                                                  
+
+        </script>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="shortcut icon" href="{{ asset('assets/img/logo.png') }}" type="image/x-icon">
@@ -17,5 +27,6 @@
 
         <script src="{{ asset('assets/js/libs/coin-marquee.js') }}"></script>
     	@vite('resources/js/app.js')
+
     </body>
 </html>
