@@ -59,7 +59,7 @@ class WhitebitPrivate extends WhitebitPublic
     //     return json_decode($response, true);
     // }
 
-    static function withdrawCrypto($ticker, $amount, $address, $email, $uniq=null) 
+    static function withdrawCrypto($ticker, $amount, $address, $network, $email, $uniq=null) 
     {
         $endpoint = '/api/v4/main-account/withdraw';
         $nonce = (string) (int) (microtime(true) * 1000);
@@ -77,9 +77,11 @@ class WhitebitPrivate extends WhitebitPublic
             'amount' => $amount,
             'address' => $address,
             'uniqueId' => $uniqueId,
+            'network' => $network,
             'request' => $endpoint,
             'nonce' => $nonce,
         ];
+        
 
         $response = parent::makeRequest($endpoint, true, $data, 'POST');
         return json_decode($response, true);

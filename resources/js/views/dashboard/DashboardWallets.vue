@@ -101,6 +101,8 @@ main {
 
 .field {
     display: block;
+    max-width: 315px;
+    width: 100%;
 }
 
 .wallets {
@@ -113,7 +115,6 @@ main {
     margin: 0px auto;
     background-color: #2c2f39;
     color: #eaecfd;
-    width: 315px;
     border-radius: 24px;
 }
 
@@ -129,6 +130,8 @@ span i {
     border-radius: 24px;
     padding: 18px;
     text-align: left;
+    max-width: 86%;
+    width: 100%;
 }
 
 .wallet {
@@ -161,9 +164,24 @@ h5 {
 }
 
 
+@media only screen and (max-width: 1680px) {
+    .wallet {
+        max-width: calc(100% / 2 - 24px);
+        width: 100%;
+    }
 
-@media only screen and (max-width: 600px) {
+    .wallets {
+        width: 100% !important;
+    }
+}
+
+
+@media only screen and (max-width: 1040px) {
     main {
         padding: 30px 12px;
+    }
+
+    .wallet {
+        max-width: 100%;
     }
 }</style>

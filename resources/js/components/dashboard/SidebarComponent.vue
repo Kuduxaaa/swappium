@@ -126,7 +126,7 @@ export default {
     },
 
     mounted() {
-        this.showMenu = (window.innerWidth >= 600);
+        this.showMenu = (window.innerWidth >= 822);
         this.getBalance();
     }
 }
@@ -245,7 +245,7 @@ export default {
     width: 241px;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 822px) {
     .sidebar {
         /* left: -100%; */
         width: 100%;

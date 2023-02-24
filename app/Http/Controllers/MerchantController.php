@@ -17,7 +17,8 @@ class MerchantController extends Controller
         $request->validate([
             'address' => 'required',
             'return_link' => 'required|url',
-            'amount' => 'required'
+            'amount' => 'required',
+            'network' => 'required'
         ]);
 
         $key = $request->header('X-Swappium-Key');
@@ -26,6 +27,7 @@ class MerchantController extends Controller
         $address = $request->get('address');
         $return_link = $request->get('return_link');
         $amount = $request->get('amount');
+        $network = $request->get('network');
         $unique_slug = rand(111111, 9999999) . time();
 
         $destination = Merchants::select('id', 'ticker', 'address')
@@ -49,7 +51,8 @@ class MerchantController extends Controller
             'address' => $address,
             'ticker' => $ticker,
             'unique_slug' => $unique_slug,
-            'amount' => $amount
+            'amount' => $amount,
+            'network' => $network,
         ]);
 
         return response()->json([
@@ -99,6 +102,7 @@ class MerchantController extends Controller
         $ticker = $merchantSettings->ticker;
         $address = $merchantSettings->address;
         $amount = $merchantSettings->amount;
+        $network = $merchantSettings->network;
         $id = $merchantSettings->unique_slug;
         $user = $request->user();
 
@@ -110,7 +114,16 @@ class MerchantController extends Controller
             'user_id' => $user->id
         ]);
 
-        WhitebitPrivate::withdrawCrypto($ticker, $address, $amount, $user->email, $id);
+        $data = WhitebitPrivate::withdrawCrypto($ticker, $amount, $address, $network, $user->email, $id);
+        
+        if (array_key_exists('errors', $data))
+        {
+            return response()->json([
+               'success' => false,
+               'data' => $data
+            ]);
+        }
+
         return redirect($merchantSettings['return_link']);
     }
 

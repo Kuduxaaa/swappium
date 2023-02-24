@@ -56,7 +56,7 @@ h2 {
     padding-top: 13rem;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 822px) {
     .home {
         background-image: inherit;
     }

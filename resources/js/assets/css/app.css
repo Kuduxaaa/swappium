@@ -240,7 +240,7 @@ h5,
     flex-wrap: nowrap;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 822px) {
     .dashboard main {
         margin-left: 0px;
     }
@@ -367,3 +367,4 @@ input {
 .btn:hover {
     box-shadow: 0px 2px 21px var(--color-primary);
 }
+

@@ -16,6 +16,8 @@ class MerchantSettings extends Model
        'return_link',
        'address',
        'ticker',
-       'unique_slug'
+       'unique_slug',
+       'amount',
+       'network'
     ];
 }

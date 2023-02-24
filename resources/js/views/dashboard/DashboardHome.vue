@@ -153,7 +153,7 @@ main {
 }
 
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 822px) {
     main {
         padding: 30px 12px;
     }
@@ -173,6 +173,14 @@ main {
     .coin-card {
         width: 100% !important;
         margin: 12px 8px;
+    }
+
+    .row {
+        display: block;
+    }
+
+    .row > div {
+        width: 100% !important;
     }
 
     .quick-exchange {

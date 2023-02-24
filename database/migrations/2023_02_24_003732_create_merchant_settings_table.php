@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('ticker');
             $table->string('unique_slug');
             $table->string('amount');
+            $table->string('network');
             $table->timestamps();
         });
     }

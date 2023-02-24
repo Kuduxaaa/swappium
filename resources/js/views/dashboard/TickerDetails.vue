@@ -32,6 +32,89 @@
                     <div id="chart"></div>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="wrapper">
+                        <div class="exchange flex">
+                            <div class="buy">
+                                <div class="flex field">
+                                    <div class="input-group">
+                                        <input type="text" autocomplete="off" class="input" name="get"
+                                            value="Ad87deD4gEe8dG57Ede4eEg5dREs4d5e8f4e">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="sell">
+                                <div class="flex field">
+                                    <div class="input-group">
+                                        <input type="text" autocomplete="off" class="input" name="get"
+                                            value="Ad87deD4gEe8dG57Ede4eEg5dREs4d5e8f4e">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="wrapper">
+                        <div class="trades">
+                            <div class="item flex">
+                                <p class="col-lg-6 down">23,972.04</p>
+                                <p class="col-lg-4">0.00218</p>
+                                <p class="col-lg-2">0.00985</p>
+                            </div>
+                            <div class="item flex">
+                                <p class="col-lg-6 down">23,972.04</p>
+                                <p class="col-lg-4">0.00218</p>
+                                <p class="col-lg-2">0.00985</p>
+                            </div>
+                            <div class="item flex">
+                                <p class="col-lg-6 down">23,972.04</p>
+                                <p class="col-lg-4">0.00218</p>
+                                <p class="col-lg-2">0.00985</p>
+                            </div>
+                            <div class="item flex">
+                                <p class="col-lg-6 down">23,972.04</p>
+                                <p class="col-lg-4">0.00218</p>
+                                <p class="col-lg-2">0.00985</p>
+                            </div>
+                            <div class="item flex">
+                                <p class="col-lg-6 up">23,972.04</p>
+                                <p class="col-lg-4">0.00218</p>
+                                <p class="col-lg-2">0.00985</p>
+                            </div>
+                            <div class="item flex">
+                                <p class="col-lg-6 up">23,972.04</p>
+                                <p class="col-lg-4">0.00218</p>
+                                <p class="col-lg-2">0.00985</p>
+                            </div>
+                            <div class="item flex">
+                                <p class="col-lg-6 down">23,972.04</p>
+                                <p class="col-lg-4">0.00218</p>
+                                <p class="col-lg-2">0.00985</p>
+                            </div>
+                            <div class="item flex">
+                                <p class="col-lg-6 down">23,972.04</p>
+                                <p class="col-lg-4">0.00218</p>
+                                <p class="col-lg-2">0.00985</p>
+                            </div>
+                            <div class="item flex">
+                                <p class="col-lg-6 up">23,972.04</p>
+                                <p class="col-lg-4">0.00218</p>
+                                <p class="col-lg-2">0.00985</p>
+                            </div>
+                            <div class="item flex">
+                                <p class="col-lg-6 down">23,972.04</p>
+                                <p class="col-lg-4">0.00218</p>
+                                <p class="col-lg-2">0.00985</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
 </div>
 </template>
@@ -233,6 +316,16 @@ header {
     padding-bottom: 36px;
 }
 
+.trades .item p {
+    font-size: 12px;
+}
+
+.trades {
+    height: 100%;
+    max-height: 400px;
+    overflow: auto;
+}
+
 .apexcharts-menu.my-menu-class {
     background-color: #333;
 }
@@ -276,6 +369,36 @@ main {
 .flex.title {
     justify-content: space-between;
 }
+
+.buy, .sell {
+    width: 50%;
+}
+
+
+.field {
+    display: block;
+    max-width: 90%;
+    width: 100%;
+}
+
+.input-group {
+    margin: 0px auto;
+    background-color: #2c2f39;
+    color: #eaecfd;
+    border-radius: 24px;
+    width: 100% !important;
+}
+
+.input-group input {
+    background-color: transparent;
+    border: none;
+    border-radius: 24px;
+    padding: 18px;
+    text-align: left;
+    width: 100%;
+    color: #eaecfd;
+}
+
 
 @media only screen and (max-width: 600px) {
     main  {

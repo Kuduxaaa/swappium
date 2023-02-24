@@ -103,7 +103,8 @@ export default {
 
 <style scoped>
 .balance-image {
-    width: 200px;
+    max-width: 200px;
+    width: 100%;
     /* height: 100px; */
 }
 
