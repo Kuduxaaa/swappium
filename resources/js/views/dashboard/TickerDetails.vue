@@ -40,18 +40,42 @@
                             <div class="buy">
                                 <div class="flex field">
                                     <div class="input-group">
-                                        <input type="text" autocomplete="off" class="input" name="get"
-                                            value="Ad87deD4gEe8dG57Ede4eEg5dREs4d5e8f4e">
+                                        <span>Price</span>
+                                        <input type="text" autocomplete="off" class="input" :value="last_price">
                                     </div>
+
+                                    <div class="input-group mt-3">
+                                        <span>Amount</span>
+                                        <input type="text" autocomplete="off" @keyup="calculateTotal" v-model="ex_amount" class="input" placeholder="Enter amount here">
+                                    </div>
+
+                                    <div class="input-group mt-3 mb-3">
+                                        <span>Total</span>
+                                        <input type="text" autocomplete="off" @keyup="calculateAmount" v-model="ex_total" class="input">
+                                    </div>
+
+                                    <button class="btn mt-4 w-100 buy-btn">Buy BTC</button>
                                 </div>
                             </div>
 
                             <div class="sell">
                                 <div class="flex field">
                                     <div class="input-group">
-                                        <input type="text" autocomplete="off" class="input" name="get"
-                                            value="Ad87deD4gEe8dG57Ede4eEg5dREs4d5e8f4e">
+                                        <span>Price</span>
+                                        <input type="text" autocomplete="off" class="input" :value="last_price">
                                     </div>
+
+                                    <div class="input-group mt-3">
+                                        <span>Amount</span>
+                                        <input type="text" autocomplete="off" @keyup="calculateTotal" v-model="ex_amount" class="input" placeholder="Enter amount here">
+                                    </div>
+
+                                    <div class="input-group mt-3 mb-3">
+                                        <span>Total</span>
+                                        <input type="text" autocomplete="off" @keyup="calculateAmount" v-model="ex_total" class="input">
+                                    </div>
+
+                                    <button class="btn mt-4 w-100 sell-btn">Sell BTC</button>
                                 </div>
                             </div>
                         </div>
@@ -125,6 +149,7 @@ import SidebarComponent from '../../components/dashboard/SidebarComponent.vue';
 
 <script>
 import ApexCharts from 'apexcharts';
+import { ref } from 'vue';
 
 export default {
     name: 'DashboardOrders',
@@ -139,11 +164,16 @@ export default {
                 'last_price': 0
             },
 
+            last_price: 0,
+
             ticker: this.$route.params.ticker,
             formatter: new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: 'USD',
             }),
+
+            ex_amount: ref(''),
+            ex_total: ref(''),
 
             wss: null,
             candles: [],
@@ -173,6 +203,14 @@ export default {
             });
         },
 
+        calculateAmount() {
+            this.ex_amount = this.ex_total / this.last_price;
+        },
+
+        calculateTotal() {
+            this.ex_total = this.ex_amount * this.last_price;
+        },
+
         addRealtimeCandle(candle) {
             const newCandle = {
                 x: candle[0] * 1000,
@@ -182,9 +220,6 @@ export default {
             if (this.candles[this.candles.length - 1] !== newCandle) {
                 this.candles.push(newCandle);
                 this.apchart.updateSeries([{ data: this.candles }]);
-                // this.zoomChart(24);
-
-                console.log(this.candles);
             }
         },
 
@@ -203,6 +238,7 @@ export default {
                 );
             }
 
+            let market = this.ticker.replace('-', '').toUpperCase();
             if (this.candles.length == 0) {
                 this.getKlines();
             }
@@ -212,9 +248,14 @@ export default {
 
                 if ('params' in data) {
                     this.details['last_price'] = data.params[0][2];
+                    document.title = `${data.params[0][2]} | ${market} | Swappium`
 
-                    // this.addRealtimeCandle(data.params[0]);
-                    console.log(data.params[0]);
+                    if (this.last_price == 0) {
+                        this.last_price = data.params[0][2];
+                    }
+
+                    this.addRealtimeCandle(data.params[0]);
+                    // console.log(data.params[0]);
                 }
             };
         },
@@ -230,7 +271,7 @@ export default {
                     data: this.candles
                 }]);
 
-                // this.zoomChart(24)
+                this.zoomChart(24)
             });
         },
 
@@ -314,6 +355,46 @@ export default {
 <style scoped>
 header {
     padding-bottom: 36px;
+}
+
+.input-group {
+    display: flex;
+}
+
+.input-group span {
+    width: 60px;
+    line-height: 60px;
+    margin-left: 28px;
+}
+
+.input-group input {
+    max-width: calc(100% - 87px);
+    text-align: right !important;
+    padding: 18px 30px !important;
+}
+
+.sell-btn {
+    font-weight: 600;
+    font-size: 16px;
+    background-color: rgb(246, 70, 93) !important;
+    color: #fff;
+    box-shadow: 0px 0px 10px rgba(246, 70, 94, 0.061);
+}
+
+.buy-btn {
+    font-weight: 600;
+    font-size: 16px;
+    background-color: rgb(14, 203, 129) !important;
+    color: #fff;
+    box-shadow: 0px 0px 10px rgba(14, 203, 131, 0.206);
+}
+
+.sell-btn:hover {
+    box-shadow: 0px 0px 10px rgba(246, 70, 94, 0.404);
+}
+
+.buy-btn:hover {
+    box-shadow: 0px 0px 10px rgba(14, 203, 131, 0.52);
 }
 
 .trades .item p {
