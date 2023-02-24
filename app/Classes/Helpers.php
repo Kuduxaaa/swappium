@@ -12,4 +12,9 @@ class Helpers
     {
         return rand(1, 999999) . self::generateIdentifier($email);
     }
+
+    static function calculatePercentage($amount, $percentage) 
+    {
+        return $amount - ($amount * ($percentage / 100));
+    }
 }

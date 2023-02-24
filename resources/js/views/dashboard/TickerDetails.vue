@@ -12,12 +12,12 @@
                 <div class="flex title">
                     <div class="price">
                         <p class="text-secondary null-m">Price</p>
-                        <h3>{{ formatter.format(details['last_price']) }}</h3>
+                        <h3>${{ details['last_price'] }}</h3>
                     </div>
 
                     <div class="params flex">
                         <div class="param">
-                            <p class="text-secondary null-m change">Chnage</p>
+                            <p class="text-secondary null-m change">Change</p>
                             <h4 v-bind:class="(details['change'][0] == '-') ? 'down' : 'up'">{{ details['change'] }}</h4>
                         </div>
 
@@ -99,7 +99,7 @@ export default {
             if (this.candles[this.candles.length - 1] !== newCandle) {
                 this.candles.push(newCandle);
                 this.apchart.updateSeries([{ data: this.candles }]);
-                this.zoomChart(24);
+                // this.zoomChart(24);
 
                 console.log(this.candles);
             }
@@ -130,7 +130,7 @@ export default {
                 if ('params' in data) {
                     this.details['last_price'] = data.params[0][2];
 
-                    this.addRealtimeCandle(data.params[0]);
+                    // this.addRealtimeCandle(data.params[0]);
                     console.log(data.params[0]);
                 }
             };
@@ -147,7 +147,7 @@ export default {
                     data: this.candles
                 }]);
 
-                this.zoomChart(24)
+                // this.zoomChart(24)
             });
         },
 

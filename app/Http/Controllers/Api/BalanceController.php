@@ -32,11 +32,6 @@ class BalanceController extends Controller
             'amount' => $wallet->amount,
         ]);
     }
-
-    public function calculatePercentage($amount, $percentage) 
-    {
-        return $amount - ($amount * ($percentage / 100));
-    }
     
 
     public function deposit (Request $request) 
@@ -55,7 +50,7 @@ class BalanceController extends Controller
             $userFee = UserFee::where('user_id', $user->id)->first();
             $fee = ($userFee) ? $userFee->fee : 1;
 
-            $amount = $this->calculatePercentage($amount, $fee);
+            $amount = Helpers::calculatePercentage($amount, $fee);
         }
 
         if (!$user) {

@@ -5,20 +5,21 @@
         </aside>
 
         <main>
-            <div class="flex">
-                <CoinInfoCard v-for="coin in coins" :coin="coin" class="coin-card" />
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="flex">
+                        <CoinInfoCard v-for="coin in coins" :coin="coin" class="coin-card" />
+                    </div>
+
+                    <div class="flex no-wrap wex">
+                        <QuickExchange class="quick-exchange" />
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <TotalBalanceComponent />
+                </div>
             </div>
-
-            <div class="flex no-wrap wex">
-                <QuickExchange class="quick-exchange" />
-
-                <div class="flex wallets-list">
-                    <BalanceCard class="balance-card" currency="USD" balance="1,487" image="icons/usdt_.png" />      
-                    <BalanceCard class="balance-card" currency="BTC" balance="0.0002" image="icons/btc_.png" />      
-                    <BalanceCard class="balance-card" currency="ETH" balance="0.34" image="icons/eth_.png" />      
-                    <BalanceCard class="balance-card" currency="XRP" balance="0" image="icons/xrp_.png" />      
-                </div> 
-            </div> 
         </main>
     </div>
 </template>
@@ -27,7 +28,7 @@
 import SidebarComponent from '../../components/dashboard/SidebarComponent.vue';
 import CoinInfoCard from '../../components/dashboard/CoinInfoCard.vue';
 import QuickExchange from '../../components/dashboard/QuickExchange.vue';
-import BalanceCard from '../../components/dashboard/BalanceCard.vue';
+import TotalBalanceComponent from '../../components/dashboard/TotalBalanceComponent.vue';
 </script>
 
 <script>
@@ -36,7 +37,7 @@ export default {
         SidebarComponent,
         CoinInfoCard,
         QuickExchange,
-        BalanceCard
+        TotalBalanceComponent
     },
 
     data() {
@@ -124,12 +125,17 @@ header {
     padding-bottom: 36px;
 }
 
+
 main {
     padding: 40px 40px;
 }
 
+.col-md-4 {
+    width: 25% !important;
+}
+
 .quick-exchange {
-    width: 60%;
+    /* width: 60%; */
     margin-top: 21px;
     margin-left: 8px;
 }
@@ -163,7 +169,7 @@ main {
     }
 }
 
-@media only screen and (max-width: 1271px) {
+@media only screen and (max-width: 1595px) {
     .coin-card {
         width: 100% !important;
         margin: 12px 8px;

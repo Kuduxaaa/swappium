@@ -27,7 +27,7 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-primary">Exchange</button>
+            <button type="submit" class="btn btn-primary mt-4">Exchange</button>
         </form>
     </div>
 </template>
@@ -138,14 +138,6 @@ export default {
 
 .btn {
     width: 100%;
-    padding: 14px !important;
-    border-radius: 24px;
-    margin-top: 18px;
-    box-shadow: 0px 2px 21px #355dff3b;
-}
-
-.btn:hover {
-    box-shadow: 0px 2px 21px var(--color-primary);
 }
 
 form .field {

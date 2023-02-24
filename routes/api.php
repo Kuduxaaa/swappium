@@ -48,6 +48,10 @@ Route::group(['namespace' => 'App\Http\Controllers\Api', 'middleware' => 'json.r
     Route::get('/user/balance/withdraw', 'BalanceController@withdraw')->name('api.user.balance.withdraw');
     Route::get('/user/balance/history', 'BalanceController@history')->name('api.user.balance.history');
 
+    Route::get('/merchant/options', [\App\Http\Controllers\MerchantController::class, 'getOptions'])->name('merchant.options')->middleware('swappium.api');
+    Route::post('/merchant/generate', [\App\Http\Controllers\MerchantController::class, 'generateLink'])->name('merchant.generate')->middleware('swappium.api');
+    Route::get('/merchant/transaction/status', [\App\Http\Controllers\MerchantController::class, 'getTransactionStatus'])->name('merchant.transaction.status')->middleware('swappium.api');
+    
     Route::group(['middleware' => 'auth:sanctum'], function($middleware) {
         Route::get('/user/balance', 'BalanceController@getBalance')->name('api.user.balance');
     });

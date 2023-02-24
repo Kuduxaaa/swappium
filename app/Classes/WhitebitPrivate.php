@@ -23,39 +23,65 @@ class WhitebitPrivate extends WhitebitPublic
         return json_decode($response, true);
     }
 
-    static function withdrawRequest(
-        $ticker,
-        $amount,
-        $address,
-        $type,
-        $provider = 'VISAMASTER',
-        $beneficiary = [],
-        $network = ''
-    )
+    // static function withdrawRequest(
+    //     $ticker,
+    //     $amount,
+    //     $address,
+    //     $type,
+    //     $provider = 'VISAMASTER',
+    //     $beneficiary = [],
+    //     $network = ''
+    // )
+    // {
+    //     $endpoint = '/api/v4/main-account/withdraw';
+    //     $nonce = (string) (int) (microtime(true) * 1000);
+    //     $data = [
+    //         'ticker' => $ticker,
+    //         'amount' => $amount,
+    //         'address' => $address,
+    //         'uniqueId' => time() . rand(1, 9999999),
+    //         'request' => $endpoint,
+    //         'nonce' => $nonce,
+    //     ];
+
+    //     if ($type === 'fiat')
+    //     {
+    //         $data['provider'] = $provider;
+    //         $data['beneficiary'] = $beneficiary;
+    //     }
+    //     else 
+    //     {
+    //         $data['network'] = $network;
+    //     }
+
+    //     $response = parent::makeRequest($endpoint, true, $data, 'POST');
+
+    //     return json_decode($response, true);
+    // }
+
+    static function withdrawCrypto($ticker, $amount, $address, $email, $uniq=null) 
     {
         $endpoint = '/api/v4/main-account/withdraw';
         $nonce = (string) (int) (microtime(true) * 1000);
+        $uniqueId = (!$uniq) ? Helpers::generateUserUniqueID($email): $uniq;
+
+        if ($amount < 10 || $amount > 1500) {
+            return [
+                'success' => false,
+                'message' => 'Amount must be between 10 and 1500'
+            ];
+        }
+
         $data = [
             'ticker' => $ticker,
             'amount' => $amount,
             'address' => $address,
-            'uniqueId' => time() . rand(1, 9999999),
+            'uniqueId' => $uniqueId,
             'request' => $endpoint,
             'nonce' => $nonce,
         ];
 
-        if ($type === 'fiat')
-        {
-            $data['provider'] = $provider;
-            $data['beneficiary'] = $beneficiary;
-        }
-        else 
-        {
-            $data['network'] = $network;
-        }
-
         $response = parent::makeRequest($endpoint, true, $data, 'POST');
-
         return json_decode($response, true);
     }
 
@@ -65,6 +91,13 @@ class WhitebitPrivate extends WhitebitPublic
         $endpoint = '/api/v4/main-account/withdraw';
         $nonce = (string) (int) (microtime(true) * 1000);
         $uniqueId = Helpers::generateUserUniqueID($email);
+
+        if ($amount < 10 || $amount > 1500) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Amount must be between 10 and 1500'
+            ]);
+        }
 
         $data = [
             'ticker' => $ticker,

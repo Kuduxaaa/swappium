@@ -15,9 +15,23 @@
 
 * {
     box-sizing: border-box;
-    transition: .3s all;
+    transition: .1s all;
     padding: 0;
     margin: 0;
+}
+
+.label {
+    background-color: var(--color-primary);
+    display: inline-block;
+    margin: 10px auto;
+    padding: 0 11px;
+    border-radius: 13px;
+    font-weight: 500;
+}
+
+.label.label-btc {
+    background-color: #FF9F38;
+    color: #fff !important;
 }
 
 body {
@@ -249,4 +263,107 @@ th, td {
 tbody, td, tfoot, th, thead, tr {
     border: 0px solid #E4E4E41C;
     padding: 28px 30px 28px 30px !important;
+}
+
+select.deposit {
+    max-width: 95px;
+    width: 100%;
+    background-color: #2c2f39;
+    color: #fff;
+    font-weight: 600;
+    border: none;
+
+    margin-left: 6px;
+    padding: 0px 18px;
+
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+
+    border-right: 8px solid #282b33;
+    border-top-left-radius: 24px;
+    border-bottom-left-radius: 24px;
+    text-align: center;
+}
+
+.swal2-title {
+    margin-top: 12px;
+}
+
+.swal2-actions {
+    margin-bottom: 14px !important;
+    margin-top: 4px !important;
+    margin: 0 auto;
+    width: 92% !important;
+}
+
+.swal2-confirm {
+    border-radius: 24px !important;
+    width: 100%;
+}
+
+.dep-sub {
+    margin-bottom: 44px;
+}
+
+.swal2-popup.swal2-modal.swal2-show {
+    width: 630px;
+}
+
+
+.field {
+    margin: 18px auto;
+    flex-wrap: nowrap;
+    margin-top: 24px;
+    box-shadow: 0px 0px 10px #0000000f;
+}
+
+.input-group.dep {
+    display: flex;
+    background-color: #2c2f39;
+    color: #eaecfd;
+    height: 66px;
+    border-radius: 24px;
+}
+
+.swal2-popup.swal2-modal.swal2-show {
+    padding: 18px;
+}
+
+.input-group input.input-dep {
+    color: #dadada;
+    background-color: transparent;
+    border: none;
+    padding: 12px 20px;
+    width: calc(100% - 101px);
+}
+
+
+.input-group label {
+    color: #a4a4a4;
+    font-size: 14px;
+    min-width: 66px;
+    line-height: 64px;
+    margin-left: 30px;
+}
+
+input {
+    -moz-appearance: textfield !important;
+    -webkit-appearance: textfield !important;
+    appearance: textfield !important;
+}
+
+.input-group input.input:focus {
+    outline: none;
+}
+
+.btn {
+    padding: 14px !important;
+    border-radius: 24px;
+    box-shadow: 0px 2px 21px #355dff3b;
+}
+
+.btn:hover {
+    box-shadow: 0px 2px 21px var(--color-primary);
 }

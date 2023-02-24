@@ -119,7 +119,7 @@ main {
 
 span i {
     font-size: 19px;
-    line-height: 48px;
+    line-height: 60px;
     cursor: pointer;
 }
 
