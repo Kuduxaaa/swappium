@@ -218,6 +218,10 @@ export default {
             };
 
             if (this.candles[this.candles.length - 1] !== newCandle) {
+                if (this.candles.length > this.candles_limit) {
+                    this.candles.shift();
+                }
+
                 this.candles.push(newCandle);
                 this.apchart.updateSeries([{ data: this.candles }]);
             }
