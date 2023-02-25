@@ -10,7 +10,7 @@ git clone https://github.com/Kuduxaaa/swappium
 cd swappium
 npm install
 npm audit fix
-composer install
+composer install --ignore-platform-req=ext-sodium
 
 # Change database information in .env file
 
