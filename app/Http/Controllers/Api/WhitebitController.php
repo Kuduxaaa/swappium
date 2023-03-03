@@ -91,4 +91,9 @@ class WhitebitController extends Controller
 
         return WhitebitPublic::getKlines($market, $interval, $limit);
     }
+
+    public function getSortedMarkets()
+    {
+        return WhitebitPublic::getSortedMarkets();
+    }
 }   

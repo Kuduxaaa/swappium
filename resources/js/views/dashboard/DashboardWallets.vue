@@ -5,72 +5,38 @@
         </aside>
 
         <main>
-            <h1>Wallets</h1>
+            <div class="d-flex justify-content-between">
+                <h1>Wallets</h1>
 
-            <div class="wallets">
-                <div class="wallet">
-                    <img src="/assets/img/icons/btc_.png" alt="Bitcoin" class="icon">
-
-                    <h5 class="mt-4 text-center">Bitcoin wallet</h5>
-                    <p class="text-secondary text-center">0.00312373 BTC</p>
-
-                    <div class="flex field">
-                        <div class="input-group">
-                            <input type="text" autocomplete="off" disabled class="input" name="get"
-                                value="1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX">
-                            <span><i class="bi bi-clipboard"></i></span>
-                        </div>
-                    </div>
+                <div class="tab-wrapper d-flex mx-4">
+                    <span @click="switchTab" :class="'tab' + (!tabPos ? ' selected' : '')">Crypto</span>
+                    <span @click="switchTab" :class="'tab' + (tabPos ? ' selected' : '')">Fiat</span>
                 </div>
-
-                <div class="wallet">
-                    <img src="/assets/img/icons/eth_.png" alt="Etherium " class="icon">
-
-                    <h5 class="mt-4 text-center">Etherium wallet</h5>
-                    <p class="text-secondary text-center">0.312373 ETH</p>
-
-                    <div class="flex field">
-                        <div class="input-group">
-                            <input type="text" autocomplete="off" disabled class="input" name="get"
-                                value="0x71C7656EC7ab88b098defB751B7401B5f6d8976F">
-                            <span><i class="bi bi-clipboard"></i></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="wallet">
-                    <img src="/assets/img/icons/xmr_.png" alt="Monero" class="icon">
-
-                    <h5 class="mt-4 text-center">Monero wallet</h5>
-                    <p class="text-secondary text-center">6.312373 XMR</p>
-
-                    <div class="flex field">
-                        <div class="input-group">
-                            <input type="text" autocomplete="off" disabled class="input" name="get"
-                                value="Ad87deD4gEe8dG57Ede4eEg5dREs4d5e8f4e">
-                            <span><i class="bi bi-clipboard"></i></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="wallet">
-                    <img src="/assets/img/icons/trx_.png" alt="Tron" class="icon">
-
-                    <h5 class="mt-4 text-center">Tron wallet</h5>
-                    <p class="text-secondary text-center">0.2373 TRX</p>
-
-                    <div class="flex field">
-                        <div class="input-group">
-                            <input type="text" autocomplete="off" disabled class="input" name="get"
-                                value="Ad87deD4gEe8dG57Ede4eEg5dREs4d5e8f4e">
-                            <span><i class="bi bi-clipboard"></i></span>
-                        </div>
-                    </div>
-                </div>
-
             </div>
 
-            
+            <div class="wallets">
+                <div class="wallet" v-for="(wallet, key) in  wallets">
+                    <img v-bind:src="'/assets/img/icons/' + wallet.ticker.toLowerCase() + '_.png'" :alt="wallet.name"
+                        class="icon">
+
+                    <h5 class="mt-4 text-center">{{ wallet.name }}</h5>
+                    <p class="text-secondary text-center">{{ wallet.amount }} {{ wallet.ticker }}</p>
+
+                    <div class="flex field" v-if="!tabPos">
+                        <div class="input-group">
+                            <input type="text" autocomplete="off" disabled class="input" name="get"
+                                v-bind:value="wallet.address">
+
+                            <span @click="copy(key)"><i class="bi bi-clipboard"></i></span>
+                        </div>
+                    </div>
+                    <div v-else class="text-center">
+                        <button @click="depositFiat(key)" class="btn btn-primary-soft mx-2">Deposit now</button>
+                        <button @click="depositFiat(key)" class="btn btn-primary-soft mx-2">Withdraw</button>
+                    </div>
+
+                </div>
+            </div>
         </main>
     </div>
 </template>
@@ -86,7 +52,111 @@ export default {
         SidebarComponent
     },
 
+    data() {
+        return {
+            wallets: [],
+            tabPos: false
+        }
+    },
 
+    methods: {
+        getWallets(type) {
+            this.$api.getWallets(type).then(response => {
+                this.wallets = response
+            });
+        },
+
+        copy(key) {
+            navigator.clipboard.writeText(this.wallets[key].address);
+
+            this.$snackbar.add({
+                type: 'success',
+                text: 'Address copied in the clipboard!'
+            });
+        },
+
+        switchTab() {
+            this.tabPos = !this.tabPos
+            this.wallets = [];
+
+            this.getWallets((!this.tabPos) ? 'crypto' : 'fiat');
+        },
+
+        depositFiat(key) {
+            this.$swal({
+                title: 'Deposit',
+                html: `
+                <p class="text-secondary dep-sub">From here you can top up your deposit, note that our fee is 1%</p>
+                <div class="flex field">
+                    <div class="input-group dep">
+                        <input type="number" placeholder="Enter amount" autocomplete="off" class="input-dep" style="width: 100%" name="get">
+                    </div>
+                </div>
+                `,
+                showCancelButton: false,
+                confirmButtonText: 'Submit',
+                showLoaderOnConfirm: true,
+            }).then((result) => {
+                const amount = document.querySelector('.input-dep').value;
+
+                if (result.isConfirmed) {
+                    this.$swal.fire({
+                        title: 'Get started!',
+                        html: '<p class="text-secondary mb-4">Now a tab will open where you can top up the balance, follow the instructions to the end</p>',
+                        timer: 2000,
+                        timerProgressBar: true,
+
+                        didOpen: () => {
+                            this.$swal.showLoading();
+                        },
+                        willClose: () => {
+                            clearInterval(this.timerInterval)
+                        }
+                    });
+
+                    this.$axios.post('user/balance/deposit', {
+                        ticker: this.wallets[key].ticker,
+                        amount: amount,
+                        provider: JSON.parse(this.wallets[key].provider)[0]
+
+                    }).then(response => {
+                        if ('success' in response.data && !response.data.success) {
+                            this.$snackbar.add({
+                                type: 'error',
+                                text: response.data.message
+                            });
+
+                            return;
+                        } else if ('errors' in response.data) {
+                            for (const key in response.data.errors) {
+                                this.$snackbar.add({
+                                    type: 'error',
+                                    text: response.data.errors[key][0]
+                                });
+                            }
+                        }
+
+                        if ('url' in response.data) {
+                            window.open(response.data.url, '_blank', 'width=500,height=800');
+                            return
+                        }
+
+                    }).catch(error => {
+                        this.$snackbar.add({
+                            type: 'error',
+                            text: error.response.data.message
+                        });
+
+                        return;
+                    });
+                }
+            })
+        }
+    },
+
+    mounted() {
+        this.getWallets('crypto');
+    }
 }
 </script>
 
@@ -97,6 +167,35 @@ header {
 
 main {
     padding: 40px 40px;
+}
+
+
+.btn-primary-soft {
+    box-shadow: none;
+}
+
+.tab-wrapper {
+    width: 280px;
+    background-color: #1f2128;
+    border-radius: 24px;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 0px 0px 10px #00000021;
+}
+
+.tab-wrapper .tab {
+    text-align: center;
+    border-radius: 24px;
+    width: 50%;
+    line-height: 56px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+}
+
+.tab-wrapper .tab.selected {
+    background-color: var(--color-primary);
 }
 
 .field {
@@ -184,4 +283,5 @@ h5 {
     .wallet {
         max-width: 100%;
     }
-}</style>
+}
+</style>

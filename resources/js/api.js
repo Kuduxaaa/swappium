@@ -28,6 +28,46 @@ class Api {
     getHistory() {
         return this.axios.get('user/balance/history').then((response) => { return response.data });
     }
+
+    getOrderbooks(market, level=0, limit=100) {
+        return this.axios.get(`whitebit/orderbook/${market}?level=${level}&limit=${limit}`, 'GET').then((response) => { return response.data });
+    }
+
+    exchange($market, $amount, $price, $side) {
+        return this.axios.post('user/balance/exchange', {
+            market: $market, 
+            amount: $amount,
+            price: $price,
+            side: $side
+
+        }).then((response) => { 
+            return response.data 
+        });
+    }
+
+    quickExchange($market, $amount, $ra, $side) {
+        return this.axios.post('user/exchange/quick', {
+            market: $market, 
+            amount: $amount,
+            ra: $ra,
+            side: $side
+
+        }).then((response) => { 
+            return response.data 
+        });
+    }
+
+    getWallets(type) {
+        return this.axios.get(`user/wallets/${type}`).then((response) => { return response.data });
+    }
+
+    getMarkets() {
+        return this.axios.get('whitebit/markets', 'GET').then((response) => { return response.data });
+    }
+
+    getSortedMarkets() {
+        return this.axios.get('whitebit/markets/sorted', 'GET').then((response) => { return response.data });
+    }
 }
 
 

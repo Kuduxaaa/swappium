@@ -97,6 +97,8 @@ return [
 
     'fallback_locale' => 'en',
 
+    'exception_handler' => App\Exceptions\ApiException::class,
+
     /*
     |--------------------------------------------------------------------------
     | Faker Locale

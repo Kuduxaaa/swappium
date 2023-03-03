@@ -16,8 +16,12 @@ return new class extends Migration
         Schema::create('user_wallets', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('market');
-            $table->float('amount');
+            $table->string('ticker');
+            $table->string('name');
+            $table->string('amount');
+            $table->string('network')->nullable();
+            $table->string('address')->nullable();
+            $table->string('provider')->nullable();
             $table->timestamps();
         });
     }

@@ -368,3 +368,26 @@ input {
     box-shadow: 0px 2px 21px var(--color-primary);
 }
 
+/* Set the width and height of the scrollbar track */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  
+  /* Set the color of the scrollbar track */
+  ::-webkit-scrollbar-track {
+    background-color: #353b45;
+  }
+  
+  /* Set the color and style of the scrollbar thumb */
+  ::-webkit-scrollbar-thumb {
+    background-color: #5f7beb;
+    border-radius: 5px;
+    border: 1px solid #555d82;
+  }
+  
+  /* Set the color and style of the scrollbar thumb when hovered */
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+  }
+  

@@ -98,30 +98,30 @@ export default {
         },
 
         getBalance() {
-            this.$axios.get('user/balance').then(response => {
-                this.userBalance = response.data.amount;
+            // this.$axios.get('user/balance').then(response => {
+            //     this.userBalance = response.data.amount;
                 
-            }).catch(response => {
+            // }).catch(response => {
 
-                if (response.response.status == 401) {
-                    this.$snackbar.add({
-                        type: 'error',
-                        text: 'Session expired, Please re-login!'
-                    });
+            //     if (response.response.status == 401) {
+            //         this.$snackbar.add({
+            //             type: 'error',
+            //             text: 'Session expired, Please re-login!'
+            //         });
 
-                    this.$auth.logout();
-                    this.$router.push('/auth/login');
-                } else {
-                    if (response.response.data.hasOwnProperty('message')) {
-                        this.$snackbar.add({
-                            type: 'error',
-                            text: response.response.data.message
-                        });
-                    } else {
-                        console.log(response.response);
-                    }
-                }
-            });
+            //         this.$auth.logout();
+            //         this.$router.push('/auth/login');
+            //     } else {
+            //         if (response.response.data.hasOwnProperty('message')) {
+            //             this.$snackbar.add({
+            //                 type: 'error',
+            //                 text: response.response.data.message
+            //             });
+            //         } else {
+            //             console.log(response.response);
+            //         }
+            //     }
+            // });
         }
     },
 

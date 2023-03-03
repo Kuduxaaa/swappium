@@ -17,4 +17,9 @@ class Helpers
     {
         return $amount - ($amount * ($percentage / 100));
     }
+
+    static function getFiatCurrencies()
+    {
+        return ['USD','EUR','GBP','JPY','CAD','AUD','CHF','CNY','HKD','NZD','SEK','KRW','SGD','NOK','MXN','INR','RUB','ZAR','TRY','BRL','TWD','DKK','PLN','THB'];
+    }
 }

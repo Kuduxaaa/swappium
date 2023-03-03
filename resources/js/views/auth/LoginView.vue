@@ -83,14 +83,13 @@ export default {
                 }
 
                 if (response.data.success && response.data.hasOwnProperty('token')) {
+                    this.$router.push('/app');
+                    this.$auth.login(response.data.token, response.data.user);
+
                     this.$snackbar.add({
                         type: 'success',
                         text: 'Successfully logged in!'
                     });
-
-                    this.$router.push('/app');
-                    this.$auth.login(response.data.token, response.data.user);
-
                 }
 
             }).catch(error => {
@@ -104,10 +103,6 @@ export default {
                 return;
             });
         }
-    },
-
-    mounted() {
-        // const accounts = this.$web3.request({ method: "eth_requestAccounts" });
     }
 }
 </script>

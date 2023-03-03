@@ -12,7 +12,7 @@
                     </div>
 
                     <div class="flex no-wrap wex">
-                        <QuickExchange class="quick-exchange" />
+                        <InstantExchange class="quick-exchange" />
                     </div>
                 </div>
 
@@ -27,7 +27,7 @@
 <script setup>
 import SidebarComponent from '../../components/dashboard/SidebarComponent.vue';
 import CoinInfoCard from '../../components/dashboard/CoinInfoCard.vue';
-import QuickExchange from '../../components/dashboard/QuickExchange.vue';
+import InstantExchange from '../../components/dashboard/InstantExchange.vue';
 import TotalBalanceComponent from '../../components/dashboard/TotalBalanceComponent.vue';
 </script>
 
@@ -36,7 +36,7 @@ export default {
     components: {
         SidebarComponent,
         CoinInfoCard,
-        QuickExchange,
+        InstantExchange,
         TotalBalanceComponent
     },
 

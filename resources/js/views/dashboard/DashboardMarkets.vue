@@ -69,7 +69,8 @@ export default {
         return {
             tickers: [],
             search_results: [],
-            intable_msg: 'Please wait...'
+            intable_msg: 'Please wait...',
+            markets: []
         }
     },
 
@@ -85,20 +86,34 @@ export default {
             }
         },
 
+        getMarkets() {
+            this.$api.getMarkets().then(result => {
+                for (let key in result) {
+                    let data = result[key];
+
+                    this.markets.push(data['name']);
+                }
+            });
+        },
+
         loadTickers () {
+            this.getMarkets();
+
             this.$api.getSortedTickers().then(response => {
                 for (let key in response) {
                     var data = response[key];
-
-                    this.tickers.push({
-                        name: key.replace('_', '/'),
-                        icon: `/assets/img/icons/${key.split('_')[0].toLowerCase()}_.png`,
-                        change: data['change'],
-                        classname: (data['change'][0] == '-') ? 'down' : 'up',
-                        price: data['last_price'],
-                        quote_volume: data['quote_volume'],
-                        base_volume: data['base_volume']
-                    })
+                    
+                    if (this.markets.includes(key)) {
+                        this.tickers.push({
+                            name: key.replace('_', '/'),
+                            icon: `/assets/img/icons/${key.split('_')[0].toLowerCase()}_.png`,
+                            change: data['change'],
+                            classname: (data['change'][0] == '-') ? 'down' : 'up',
+                            price: data['last_price'],
+                            quote_volume: data['quote_volume'],
+                            base_volume: data['base_volume']
+                        });
+                    }
                 }
 
                 this.search_results = this.tickers;

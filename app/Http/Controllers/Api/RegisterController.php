@@ -45,11 +45,7 @@ class RegisterController extends Controller
             'referral_code' => $referral,
         ]);
 
-        UserWallet::create([
-            'user_id' => $user->id,
-            'market' => 'USD',
-            'amount' => 0
-        ]);
+        $user->generateWallets();
 
         ReferralCode::create([
             'code' => Str::random(18), 

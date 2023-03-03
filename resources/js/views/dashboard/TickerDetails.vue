@@ -41,7 +41,7 @@
                                 <div class="flex field">
                                     <div class="input-group">
                                         <span>Price</span>
-                                        <input type="text" autocomplete="off" class="input" :value="last_price">
+                                        <input type="text" autocomplete="off" class="input" v-model="tradeprice">
                                     </div>
 
                                     <div class="input-group mt-3">
@@ -54,7 +54,7 @@
                                         <input type="text" autocomplete="off" @keyup="calculateAmount" v-model="ex_total" class="input">
                                     </div>
 
-                                    <button class="btn mt-4 w-100 buy-btn">Buy BTC</button>
+                                    <button class="btn mt-4 w-100 buy-btn" @click="exchange('buy')">Buy {{ ticker.split('-')[0].toUpperCase() }}</button>
                                 </div>
                             </div>
 
@@ -75,7 +75,7 @@
                                         <input type="text" autocomplete="off" @keyup="calculateAmount" v-model="ex_total" class="input">
                                     </div>
 
-                                    <button class="btn mt-4 w-100 sell-btn">Sell BTC</button>
+                                    <button class="btn mt-4 w-100 sell-btn" @click="exchange('sell')">Sell {{ ticker.split('-')[0].toUpperCase() }}</button>
                                 </div>
                             </div>
                         </div>
@@ -85,55 +85,10 @@
                 <div class="col-lg-4">
                     <div class="wrapper">
                         <div class="trades">
-                            <div class="item flex">
-                                <p class="col-lg-6 down">23,972.04</p>
-                                <p class="col-lg-4">0.00218</p>
-                                <p class="col-lg-2">0.00985</p>
-                            </div>
-                            <div class="item flex">
-                                <p class="col-lg-6 down">23,972.04</p>
-                                <p class="col-lg-4">0.00218</p>
-                                <p class="col-lg-2">0.00985</p>
-                            </div>
-                            <div class="item flex">
-                                <p class="col-lg-6 down">23,972.04</p>
-                                <p class="col-lg-4">0.00218</p>
-                                <p class="col-lg-2">0.00985</p>
-                            </div>
-                            <div class="item flex">
-                                <p class="col-lg-6 down">23,972.04</p>
-                                <p class="col-lg-4">0.00218</p>
-                                <p class="col-lg-2">0.00985</p>
-                            </div>
-                            <div class="item flex">
-                                <p class="col-lg-6 up">23,972.04</p>
-                                <p class="col-lg-4">0.00218</p>
-                                <p class="col-lg-2">0.00985</p>
-                            </div>
-                            <div class="item flex">
-                                <p class="col-lg-6 up">23,972.04</p>
-                                <p class="col-lg-4">0.00218</p>
-                                <p class="col-lg-2">0.00985</p>
-                            </div>
-                            <div class="item flex">
-                                <p class="col-lg-6 down">23,972.04</p>
-                                <p class="col-lg-4">0.00218</p>
-                                <p class="col-lg-2">0.00985</p>
-                            </div>
-                            <div class="item flex">
-                                <p class="col-lg-6 down">23,972.04</p>
-                                <p class="col-lg-4">0.00218</p>
-                                <p class="col-lg-2">0.00985</p>
-                            </div>
-                            <div class="item flex">
-                                <p class="col-lg-6 up">23,972.04</p>
-                                <p class="col-lg-4">0.00218</p>
-                                <p class="col-lg-2">0.00985</p>
-                            </div>
-                            <div class="item flex">
-                                <p class="col-lg-6 down">23,972.04</p>
-                                <p class="col-lg-4">0.00218</p>
-                                <p class="col-lg-2">0.00985</p>
+                            <div v-for="order in orderbook.data" class="item flex orderbk">
+                                <p v-bind:class="'col-lg-6 ' + ((order[2] == 'sell') ? 'down' : 'up')">{{ order[0] }}</p>
+                                <p class="col-lg-4">{{ order[1] }}</p>
+                                <p class="col-lg-2">{{ timestampToDate(orderbook.timestamp) }}</p>
                             </div>
                         </div>
                     </div>
@@ -165,6 +120,7 @@ export default {
             },
 
             last_price: 0,
+            tradeprice: ref(''),
 
             ticker: this.$route.params.ticker,
             formatter: new Intl.NumberFormat('en-US', {
@@ -177,7 +133,9 @@ export default {
 
             wss: null,
             candles: [],
-            apchart: null
+            apchart: null,
+            orderbook: {},
+            candles_limit: 300
         }
     },
 
@@ -217,6 +175,10 @@ export default {
                 y: [candle[1], candle[3], candle[4], candle[2]]
             };
 
+            if (this.candles.length >= this.candles_limit) {
+                this.candles.shift(-1);
+            }
+
             if (this.candles[this.candles.length - 1] !== newCandle) {
                 if (this.candles.length > this.candles_limit) {
                     this.candles.shift();
@@ -225,6 +187,23 @@ export default {
                 this.candles.push(newCandle);
                 this.apchart.updateSeries([{ data: this.candles }]);
             }
+
+            console.log(this.candles.length);
+        },
+
+        timestampToDate(timestamp) {
+            // create a new Date object and pass the timestamp as an argument
+            const date = new Date(timestamp * 1000);
+
+            // extract the day, month, and year from the date object
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // add 1 to get the correct month index
+            const year = date.getFullYear().toString();
+
+            // concatenate the day, month, and year with '/' separator
+            const formattedDate = `${day}/${month}/${year}`;
+
+            return formattedDate;
         },
 
         subscribeWhitebit() {
@@ -255,11 +234,11 @@ export default {
                     document.title = `${data.params[0][2]} | ${market} | Swappium`
 
                     if (this.last_price == 0) {
-                        this.last_price = data.params[0][2];
+                        this.last_price = data.params[0][2];        
+                        this.tradeprice = ref(this.last_price);
                     }
 
                     this.addRealtimeCandle(data.params[0]);
-                    // console.log(data.params[0]);
                 }
             };
         },
@@ -289,6 +268,40 @@ export default {
             );
 
             this.wss.close();
+        },
+
+        getOrderbooks() {
+            this.$api.getOrderbooks(this.ticker.replace('-', '_').toUpperCase()).then(response => {
+                let bids = response.bids.map((item) => { (item) ? item.push('sell') : null; return item });
+                let asks = response.asks.map((item) => { (item) ? item.push('buy') : null; return item });
+
+                let concated = bids.concat(asks);
+                this.orderbook['data'] = concated.sort(() => Math.random() - 0.5);
+                this.orderbook['timestamp'] = response.timestamp;
+            });
+        },
+
+        exchange(type) {
+            this.$api.exchange(this.ticker.replace('-', '_').toUpperCase(), this.ex_amount, this.tradeprice, type).then(response => {
+                if ('errors' in response) {
+                    for (const key in response.errors) {
+                        this.$snackbar.add({
+                            type: 'error',
+                            text: response.errors[key][0]
+                        });
+                    }
+                } else if ('success' in response && !response.success) {
+                    this.$snackbar.add({
+                        type: 'error',
+                        text: response.message
+                    });
+                } else {
+                    this.$snackbar.add({
+                        type:'success',
+                        text: 'Order successfully completed'
+                    });
+                }
+            });
         }
     },
 
@@ -348,6 +361,13 @@ export default {
 
         this.getDetails();
         this.subscribeWhitebit();
+
+        this.getOrderbooks();        
+        setInterval(() => {
+            this.getOrderbooks();
+        }, 5000);
+
+        console.log(this.orderbook)
     },
 
     destroyed() {
@@ -407,7 +427,7 @@ header {
 
 .trades {
     height: 100%;
-    max-height: 400px;
+    max-height: 351px;
     overflow: auto;
 }
 

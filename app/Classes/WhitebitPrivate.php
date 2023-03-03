@@ -23,41 +23,6 @@ class WhitebitPrivate extends WhitebitPublic
         return json_decode($response, true);
     }
 
-    // static function withdrawRequest(
-    //     $ticker,
-    //     $amount,
-    //     $address,
-    //     $type,
-    //     $provider = 'VISAMASTER',
-    //     $beneficiary = [],
-    //     $network = ''
-    // )
-    // {
-    //     $endpoint = '/api/v4/main-account/withdraw';
-    //     $nonce = (string) (int) (microtime(true) * 1000);
-    //     $data = [
-    //         'ticker' => $ticker,
-    //         'amount' => $amount,
-    //         'address' => $address,
-    //         'uniqueId' => time() . rand(1, 9999999),
-    //         'request' => $endpoint,
-    //         'nonce' => $nonce,
-    //     ];
-
-    //     if ($type === 'fiat')
-    //     {
-    //         $data['provider'] = $provider;
-    //         $data['beneficiary'] = $beneficiary;
-    //     }
-    //     else 
-    //     {
-    //         $data['network'] = $network;
-    //     }
-
-    //     $response = parent::makeRequest($endpoint, true, $data, 'POST');
-
-    //     return json_decode($response, true);
-    // }
 
     static function withdrawCrypto($ticker, $amount, $address, $network, $email, $uniq=null) 
     {
@@ -80,6 +45,26 @@ class WhitebitPrivate extends WhitebitPublic
             'network' => $network,
             'request' => $endpoint,
             'nonce' => $nonce,
+        ];
+        
+
+        $response = parent::makeRequest($endpoint, true, $data, 'POST');
+        return json_decode($response, true);
+    }
+
+
+    static function transferMoney($from, $to, $ticker, $amount)
+    {
+        $endpoint = '/api/v4/main-account/transfer';
+        $nonce = (string) (int) (microtime(true) * 1000);
+
+        $data = [
+            'ticker' => $ticker,
+            'amount' => $amount,
+            'from' => $from,
+            'to' => $to,
+            'request' => $endpoint,
+            'nonce' => $nonce
         ];
         
 
@@ -182,7 +167,7 @@ class WhitebitPrivate extends WhitebitPublic
         return json_decode($response, true);
     }
 
-    static function getMainAddress($ticker)
+    static function getMainAddress($ticker, $network=null)
     {
         $endpoint = '/api/v4/main-account/address';
         $nonce = (string) (int) (microtime(true) * 1000);
@@ -191,8 +176,32 @@ class WhitebitPrivate extends WhitebitPublic
             'ticker' => $ticker,
             'request' => $endpoint,
             'nonce' => $nonce,
-            'nonceWindow' => true,
         ];
+
+        if ($network) 
+        {
+            $data['network'] = $network;
+        }
+        
+        $response = parent::makeRequest($endpoint, true, $data, 'POST');
+        return json_decode($response, true);
+    }
+
+    static function createNewAddress($ticker, $network = null) 
+    {
+        $endpoint = '/api/v4/main-account/create-new-address';
+        $nonce = (string) (int) (microtime(true) * 1000);
+
+        $data = [
+            'ticker' => $ticker,
+            'request' => $endpoint,
+            'nonce' => $nonce,
+        ];
+
+        if ($network) 
+        {
+            $data['network'] = $network;
+        }
         
         $response = parent::makeRequest($endpoint, true, $data, 'POST');
         return json_decode($response, true);
@@ -230,60 +239,72 @@ class WhitebitPrivate extends WhitebitPublic
         $nonce = (string) (int) (microtime(true) * 1000);
         $request = '/api/v4/main-account/history';
 
-        echo $nonce;
+        $data = [
+            'offset' => 0,
+            'limit' => 10,
+            'nonce' => $nonce,
+            'request' => $request,
+        ];
 
-        foreach($transactions as $transaction){
-            echo 'Working on: ' . $transaction->uniqueId . '\n';
+        $response = self::mainAccountHistory($request, $data);
 
-            $data = [
-                'offset' => 0,
-                'limit' => 10,
-                'nonce' => $nonce,
-                'uniqueId' => $transaction->uniqueId,
-                'request' => $request,
-            ];
+        print_r($response);
 
-            $assocResponse = self::mainAccountHistory($request, $data);
-            $response = $assocResponse['response'];
-            $status = $assocResponse['status'];
+        // echo $nonce;
 
-            var_dump($response);
+        // foreach($transactions as $transaction)
+        // {
+        //     echo 'Working on: ' . $transaction->uniqueId . '\n';
 
-            if ($status == 3 || $status == 7) 
-            {
-                $wallet = UserWallet::where([
-                    ['user_id', $transaction->user_id],
-                    ['market', $transaction->ticker]
-                ]);
+        //     $data = [
+        //         'offset' => 0,
+        //         'limit' => 10,
+        //         'nonce' => $nonce,
+        //         'uniqueId' => $transaction->uniqueId,
+        //         'request' => $request,
+        //     ];
 
-                if ($wallet->count() == 0) 
-                {
-                    $transaction->update(['status' => 1]);
+        //     $assocResponse = self::mainAccountHistory($request, $data);
+        //     $response = $assocResponse['response'];
+        //     $status = $assocResponse['status'];
 
-                    UserWallet::create([
-                        'user_id' => $transaction->user_id,
-                        'market' => $transaction->ticker,
-                        'amount' => $response['records'][0]['amount'],
-                    ]);
-                } 
-                else 
-                {
-                    $transaction->update(['status' => 7]);
+        //     var_dump($response);
 
-                    $amount =  UserWallet::where([
-                        ['user_id', $transaction->user_id],
-                        ['market', $transaction->ticker]
-                    ])->first()->amount;
+        //     if ($status == 3 || $status == 7) 
+        //     {
+        //         $wallet = UserWallet::where([
+        //             ['user_id', $transaction->user_id],
+        //             ['market', $transaction->ticker]
+        //         ]);
 
-                    UserWallet::where([
-                        ['user_id', $transaction->user_id],
-                        ['market', $transaction->ticker]
+        //         if ($wallet->count() == 0) 
+        //         {
+        //             $transaction->update(['status' => 1]);
 
-                    ])->update([
-                        'amount' => $amount + $response['records'][0]['amount'],
-                    ]);
-                }
-            }
-        }
+        //             UserWallet::create([
+        //                 'user_id' => $transaction->user_id,
+        //                 'market' => $transaction->ticker,
+        //                 'amount' => $response['records'][0]['amount'],
+        //             ]);
+        //         } 
+        //         else 
+        //         {
+        //             $transaction->update(['status' => 7]);
+
+        //             $amount =  UserWallet::where([
+        //                 ['user_id', $transaction->user_id],
+        //                 ['market', $transaction->ticker]
+        //             ])->first()->amount;
+
+        //             UserWallet::where([
+        //                 ['user_id', $transaction->user_id],
+        //                 ['market', $transaction->ticker]
+
+        //             ])->update([
+        //                 'amount' => $amount + $response['records'][0]['amount'],
+        //             ]);
+        //         }
+        //     }
+        // }
     }
 }

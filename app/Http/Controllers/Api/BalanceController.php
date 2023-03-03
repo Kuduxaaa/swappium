@@ -24,7 +24,7 @@ class BalanceController extends Controller
 
         $wallet = UserWallet::where([
             ['user_id', $request->user()->id],
-            ['market', 'USD']
+            ['ticker', 'USD']
         ])->first();
 
         return response()->json([
@@ -38,11 +38,13 @@ class BalanceController extends Controller
     {
         $request->validate([
             'ticker' => 'required',
-            'amount' => 'required'
+            'amount' => 'required',
+            'provider' => 'required',
         ]);
 
         $ticker = $request->get('ticker');
         $amount = $request->get('amount');
+        $provider = $request->get('provider');
         $user = $request->user();
 
         if ($user->role !== 2)
@@ -74,7 +76,7 @@ class BalanceController extends Controller
 
         $link = WhitebitPrivate::getFiatDepositURI(
             $ticker, 
-            'VISAMASTER', 
+            $provider, 
             $amount, 
             $userFirstName, 
             $userLastName, 
@@ -150,8 +152,45 @@ class BalanceController extends Controller
             ], 401);
         }
         
-        // $uniqueId = Helpers::generateIdentifier($user->email);
+        $uniqueId = Helpers::generateIdentifier($user->email);
 
-        return WhitebitPrivate::getHistory(0, 100);
+        return WhitebitPrivate::getHistory(0, 100, $uniqueId);
+    }
+
+    public function exchange(Request $request)
+    {
+        $request->validate([
+            'market' => 'required',
+            'amount' => 'required',
+            'side' => 'required',
+            'price' => 'required',
+        ]);
+
+        $user = $request->user();
+        $market = $request->get('market');
+        $amount = $request->get('amount');
+        $side = $request->get('side');
+        $price = $request->get('price');
+        $user_id = $user->id;
+
+        return UserService::createLimitOrder($market, $amount, $price, $side, $user_id);
+    }
+
+    public function quickExchange(Request $request)
+    {
+        $request->validate([
+            'market' => 'required',
+            'amount' => 'required',
+            'side' => 'required',
+        ]);
+
+        $user = $request->user();
+        $market = $request->get('market');
+        $amount = $request->get('amount');
+        $ra = $request->get('ra');
+        $side = $request->get('side');
+        $user_id = $user->id;
+
+        return UserService::createMarketOrder($market, $amount, $ra, $side, $user_id);
     }
 }

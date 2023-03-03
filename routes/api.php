@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
@@ -38,21 +38,25 @@ Route::group(['namespace' => 'App\Http\Controllers\Api', 'middleware' => 'json.r
         Route::get('/markets', 'WhitebitController@getMarkets')->name('api.whitebit.markets');
         Route::get('/markets/collateral', 'WhitebitController@getCollateralMarkets')->name('api.whitebit.collateral.markets');
         Route::get('/markets/futures', 'WhitebitController@getFutureMarkets')->name('api.whitebit.future.markets');
+        Route::get('/markets/sorted', 'WhitebitController@getSortedMarkets')->name('api.whitebit.sorted.markets');
         Route::get('/klines', 'WhitebitController@getKlines')->name('api.whitebit.klines');
     });
 
     Route::get('/crypto/prices', 'CoingeckoController@getPrices')->name('api.crypto.prices');
     
-    // put it in middleware
-    Route::post('/user/balance/deposit', 'BalanceController@deposit')->name('api.user.balance.deposit');
-    Route::get('/user/balance/withdraw', 'BalanceController@withdraw')->name('api.user.balance.withdraw');
-    Route::get('/user/balance/history', 'BalanceController@history')->name('api.user.balance.history');
 
     Route::get('/merchant/options', [\App\Http\Controllers\MerchantController::class, 'getOptions'])->name('merchant.options')->middleware('swappium.api');
     Route::post('/merchant/generate', [\App\Http\Controllers\MerchantController::class, 'generateLink'])->name('merchant.generate')->middleware('swappium.api');
     Route::get('/merchant/transaction/status', [\App\Http\Controllers\MerchantController::class, 'getTransactionStatus'])->name('merchant.transaction.status')->middleware('swappium.api');
     
-    Route::group(['middleware' => 'auth:sanctum'], function($middleware) {
+    Route::group(['middleware' => 'auth:api'], function() {
         Route::get('/user/balance', 'BalanceController@getBalance')->name('api.user.balance');
+        Route::get('/user/wallets/{type}', 'WalletsController@myWallets')->name('api.user.wallets');
+
+        Route::post('/user/balance/deposit', 'BalanceController@deposit')->name('api.user.balance.deposit');
+        Route::get('/user/balance/withdraw', 'BalanceController@withdraw')->name('api.user.balance.withdraw');
+        Route::get('/user/balance/history', 'BalanceController@history')->name('api.user.balance.history');
+        Route::post('/user/balance/exchange', 'BalanceController@exchange')->name('api.user.balance.exchange');
+        Route::post('/user/exchange/quick', 'BalanceController@quickExchange')->name('api.user.exchange.quick');
     });
 });

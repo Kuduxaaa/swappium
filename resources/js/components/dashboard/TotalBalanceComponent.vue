@@ -8,7 +8,7 @@
         <p class="balance">0.16231428</p>
         <p class="balance-usd">3,700.96 USD</p>
 
-        <button @click="alert" class="btn btn-primary mt-4 mb-4">Withdraw</button>
+        <button @click="alert" class="btn btn-primary mt-4 mb-4">Deposit</button>
     </div>
 </template>
 

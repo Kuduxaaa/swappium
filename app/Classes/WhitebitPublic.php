@@ -160,6 +160,37 @@ class WhitebitPublic
 
 
 
+    static function getSortedMarkets()
+    {
+        $data = self::getMarkets();        
+        $grouped_data = [];
+
+        foreach ($data as $item) 
+        {
+            if ($item['type'] === 'spot') 
+            {
+                $stock = $item['stock'];
+                $money = $item['money'];
+
+                if (!array_key_exists($stock, $grouped_data)) 
+                {
+                    $grouped_data[$stock] = [$money];
+                } 
+                else 
+                {
+                    array_push($grouped_data[$stock], $money);
+                }
+            }
+        }
+
+        return [
+            'success' => true,
+            'data' => $grouped_data
+        ];
+    }
+
+
+
     /**
      * This function retrieves the list of fees and min/max amount for deposits and withdraws
      * 

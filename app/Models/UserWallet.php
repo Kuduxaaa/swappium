@@ -11,7 +11,11 @@ class UserWallet extends Model
 
     protected $fillable = [
         'user_id',
-        'market',
+        'ticker',
         'amount',
+        'network',
+        'name',
+        'address',
+        'provider'
     ];
 }

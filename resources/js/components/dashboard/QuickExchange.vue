@@ -3,14 +3,14 @@
         <h3 class="mt-1 text-bold">Crypto exchange</h3>
         <p class="text-secondary">You can quickly exchange cryptocurrency from here</p>
 
-        <form @submit.prevent="submitExchange" class="ex-form" autocomplete="off">
+        <form class="ex-form" autocomplete="off">
             <div class="flex field">
                 <div class="input-group">
                     <label for="send">You send</label>
-                    <input type="text" @keyup="valueChangeHandler" autocomplete="no" class="input" name="send" value="0.1">
+                    <input type="text" autocomplete="no" class="input" name="send" value="0.1">
                 </div>
 
-                <select @change="changeHandler" v-model="send">
+                <select v-model="send">
                     <option v-for="ticker in options" :value="ticker" :selected="(ticker == 'BTC') ? 'selected' : null">
                         {{ ticker }}</option>
                 </select>
@@ -22,13 +22,17 @@
                     <input type="text" autocomplete="off" disabled class="input" name="get" :value="calcedVal">
                 </div>
 
-                <select v-model="get" @change="changeGet">
+                <select v-model="get">
                     <option v-for="ticker in exoptions" :value="ticker.name">{{ ticker.name }}</option>
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-primary mt-4">Exchange</button>
+            <div class="button-container">
+                <button type="button" @click="buy('sell')" class="btn btn-primary mt-4 w-48 mx-2">Buy {{ this.selected_market[1] }} with {{ this.selected_market[0] }}</button>
+                <button type="button" @click="buy('buy')" class="btn btn-primary mt-4 w-48 mx-2">Buy {{ this.selected_market[0] }} with {{ this.selected_market[1] }}</button>
+            </div>
         </form>
+
     </div>
 </template>
 
@@ -47,6 +51,8 @@ export default {
             send: ref('BTC'),
             get: ref('EUR'),
             sendVal: 0.1,
+            getVal: 0.1,
+            selected_market: ['BTC', 'EUR'],
         }
     },
 
@@ -97,8 +103,10 @@ export default {
             this.sendVal = event.target.value
         },
 
-        changeGet() {
+        changeGet(event) {
+            this.selected_market[1] = event.target.value
             this.calculate(this.sendVal);
+            console.log(this.selected_market);
         },
 
         changeHandler() {
@@ -115,12 +123,25 @@ export default {
                 }
 
                 this.get = ref(this.exoptions[0]['name']);
+                this.selected_market = this.exoptions[0].value.split('_');
                 this.calculate(0.1);
+
+                console.log(this.selected_market);
             });
         },
 
         submitExchange() {
             console.log('okay okay :D');
+        },
+
+        buy(side) {
+            let ticker = this.selected_market.join('_');
+
+            console.log(`I want to ${side} ${this.sendVal} ${ticker.split('_')[0]} ${(side == 'sell') ? 'to buy' : 'with'} ${ticker.split('_')[1]}`);
+
+            this.$api.quickExchange(ticker, this.calcedVal, side).then(result => {
+                console.log(result);
+            })
         }
     },
 
@@ -139,6 +160,13 @@ export default {
 .btn {
     width: 100%;
 }
+
+.button-container {
+  display: flex;
+  justify-content: center; /* centers the container horizontally */
+  margin: 0 -1rem; /* negates the margin added to the buttons */
+}
+
 
 form .field {
     margin: 18px auto;
@@ -177,7 +205,6 @@ form .field {
     margin-left: 30px;
 }
 
-
 .input-group input.input:focus {
     outline: none;
 }
@@ -203,6 +230,17 @@ select {
 
 .ex-form {
     margin-top: 32px;
+}
+
+@media only screen and (max-width: 720px) {
+    .button-container {
+        display: block;
+    }
+
+    .button-container button {
+        width: calc(100% - 30px);
+        margin: 8px 16px !important;
+    }
 }
 
 @media only screen and (max-width: 600px) {
