@@ -2,21 +2,21 @@
 
 namespace App\Classes;
 
+use App\Models\User;
 use App\Models\UserWallet;
 use App\Models\UserTransaction;
 
 class WhitebitPrivate extends WhitebitPublic
 {
-    static function getTradingBalance()
+    static function getBalance($ticker)
     {
-        $endpoint = '/api/v4/trade-account/balance';
+        $endpoint = '/api/v4/main-account/balance';
         $nonce = (string) (int) (microtime(true) * 1000);
 
         $data = [
-            'ticker' => 'BTC',
+            'ticker' => $ticker,
             'request' => $endpoint,
             'nonce' => $nonce,
-            'nonceWindow' => true,
         ];
 
         $response = parent::makeRequest($endpoint, true, $data, 'POST');
@@ -24,24 +24,23 @@ class WhitebitPrivate extends WhitebitPublic
     }
 
 
-    static function withdrawCrypto($ticker, $amount, $address, $network, $email, $uniq=null) 
+    static function withdrawCrypto($ticker, $amount, $address, $network, $uid) 
     {
+        $bal = self::getBalance($ticker)['main_balance'];
+
+        if ($bal > 0) 
+        {
+            self::transferMoney('main', 'spot', $ticker, $bal);
+        }
+
         $endpoint = '/api/v4/main-account/withdraw';
         $nonce = (string) (int) (microtime(true) * 1000);
-        $uniqueId = (!$uniq) ? Helpers::generateUserUniqueID($email): $uniq;
-
-        if ($amount < 10 || $amount > 1500) {
-            return [
-                'success' => false,
-                'message' => 'Amount must be between 10 and 1500'
-            ];
-        }
 
         $data = [
             'ticker' => $ticker,
             'amount' => $amount,
             'address' => $address,
-            'uniqueId' => $uniqueId,
+            'uniqueId' => $uid,
             'network' => $network,
             'request' => $endpoint,
             'nonce' => $nonce,
@@ -73,11 +72,17 @@ class WhitebitPrivate extends WhitebitPublic
     }
 
 
-    static function withdraw($ticker, $amount, $cardNumber, $beneficiarFirstname, $beneficiarLastname, $email, $phone, $provider='VISAMASTER') 
+    static function withdraw($ticker, $amount, $cardNumber, $beneficiarFirstname, $beneficiarLastname, $uid, $phone, $provider='VISAMASTER') 
     {
+        $bal = self::getBalance($ticker)['main_balance'];
+
+        if ($bal > 0) 
+        {
+            self::transferMoney('spot', 'main', $ticker, $amount);
+        }
+
         $endpoint = '/api/v4/main-account/withdraw';
         $nonce = (string) (int) (microtime(true) * 1000);
-        $uniqueId = Helpers::generateUserUniqueID($email);
 
         if ($amount < 10 || $amount > 1500) {
             return response()->json([
@@ -98,7 +103,7 @@ class WhitebitPrivate extends WhitebitPublic
             ],
             
             'provider' => $provider,
-            'uniqueId' => $uniqueId,
+            'uniqueId' => $uid,
             'request' => $endpoint,
             'nonce' => $nonce
         ];
@@ -128,8 +133,15 @@ class WhitebitPrivate extends WhitebitPublic
         return json_decode($response, true);
     }
 
-    static function getFiatDepositURI($ticker, $provider, $amount, $userFirstname, $userLastname, $userEmail, $successLink = null, $failureLink = null, $returnLink = null) 
-    {   
+    static function getFiatDepositURI($ticker, $provider, $amount, $userFirstname, $userLastname, $userEmail, $uid, $successLink = null, $failureLink = null, $returnLink = null) 
+    {
+        $bal = self::getBalance($ticker)['main_balance'];
+
+        if ($bal > 0) 
+        {
+            self::transferMoney('main', 'spot', $ticker, $bal);
+        }
+
         $endpoint = '/api/v4/main-account/fiat-deposit-url';
         $nonce = (string) (int) (microtime(true) * 1000);
 
@@ -137,7 +149,7 @@ class WhitebitPrivate extends WhitebitPublic
             'ticker' => $ticker,
             'provider' => $provider,
             'amount' => $amount,
-            'uniqueId' => time() . rand(1, 9999),
+            'uniqueId' => $uid,
             'customer' => [
                 'firstName' => $userFirstname,
                 'lastName' => $userLastname,
@@ -208,47 +220,67 @@ class WhitebitPrivate extends WhitebitPublic
     }
 
 
-    static function mainAccountHistory($request, $data)
-    {
-        $response = parent::makeRequest($request, true, $data, 'POST');
-        $response = json_decode($response, true);
-        $status = 0;
-        
-        try 
-        {
-            if (count($response['records']) > 0)
-            {
-                $status = $response['records'][0]['status'];
-            }
-        } 
-        catch (\Throwable $err) 
-        {
-            //throw $th;
-        }
-
-        return [
-            'data' => $response,
-            'status' => $status,
-        ];
-    }
-
-
     static function updateMoneyWithCron() 
     {
-        $transactions = UserTransaction::where('status', 0)->get();
-        $nonce = (string) (int) (microtime(true) * 1000);
-        $request = '/api/v4/main-account/history';
+        $transactions = UserTransaction::where('status', 'pending')->get();
 
-        $data = [
-            'offset' => 0,
-            'limit' => 10,
-            'nonce' => $nonce,
-            'request' => $request,
-        ];
+        if (count($transactions) > 0)
+        {
+            foreach ($transactions as $transaction)
+            {
+                $records = self::getHistory(0, 1, $transaction->uniqueId)['records'];
 
-        $response = self::mainAccountHistory($request, $data);
+                if (count($records) > 0)
+                {
+                    $status = Helpers::getStatus($records[0]['status']);
 
-        print_r($response);
+                    if ($status === 'Success') 
+                    {
+                        $wallet = UserWallet::where('user_id', $transaction->user_id)->where('ticker', $transaction->ticker)->first();
+
+                        if ($wallet) 
+                        {
+                            if ($records[0]['method'] == 1)
+                            {
+                                $wallet->amount = $wallet->amount + $transaction->amount;
+                                $wallet->save();
+                            }
+                            else
+                            {
+                                $wallet->amount = $wallet->amount - $transaction->amount;
+                                $wallet->save();
+                            }
+                        }
+                    }
+
+                    $transaction->update([
+                        'status' => $status,
+                    ]);
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+        // $nonce = (string) (int) (microtime(true) * 1000);
+        // $request = '/api/v4/main-account/history';
+
+        // $data = [
+        //     'offset' => 0,
+        //     'limit' => 10,
+        //     'nonce' => $nonce,
+        //     'request' => $request,
+        // ];
+
+        // $response = self::mainAccountHistory($request, $data);
+
+        // print_r($response);
 
         // echo $nonce;
 

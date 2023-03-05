@@ -50,12 +50,12 @@
                 </router-link>
             </div>
 
-            <div v-if="userData.role == 2" v-bind:class="(routePath == '/app/settings') ? 'item selected' : 'item'">
+            <!-- <div v-if="userData.role == 2" v-bind:class="(routePath == '/app/settings') ? 'item selected' : 'item'">
                 <router-link to="/app/settings">
                     <i class="bi bi-circle"></i>
                     God Mode
                 </router-link>
-            </div>
+            </div> -->
 
             <div v-bind:class="(routePath == '/app/settings') ? 'item selected' : 'item'">
                 <router-link to="/app/settings">

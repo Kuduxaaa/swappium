@@ -10,7 +10,7 @@ use App\Models\UserTransaction;
 
 class UserService 
 {
-    static function createUserTransaction($user_id, $ticker, $method, $address, $nonce, $amount)
+    static function createUserTransaction($user_id, $ticker, $method, $address, $nonce, $amount, $uid)
     {
         return UserTransaction::create([
             'user_id' => $user_id,
@@ -19,7 +19,7 @@ class UserService
             'address' => $address,
             'nonce' => $nonce,
             'amount' => $amount,
-            'uniqueId' => time() . rand(1, 9999),
+            'uniqueId' => $uid,
             'status' => 'pending',
         ]);
     }
@@ -44,6 +44,13 @@ class UserService
         $sell = ($side == 'buy') ? $market_splitted[1] : $market_splitted[0]; // Buy = USDT (გაცემა); Sell = DOGE (გაცემა);
         $sell = strtoupper($sell);
         $amount = strval($amount);
+
+        $bal = WhitebitPrivate::getBalance($sell)['main_balance'];
+
+        if ($bal > 0) 
+        {
+            WhitebitPrivate::transferMoney('main', 'spot', $sell, $bal);
+        }
 
         $funds = UserWallet::where([
             'user_id' => $user_id,
@@ -124,6 +131,13 @@ class UserService
         $sell = ($side == 'buy') ? $market_splitted[1] : $market_splitted[0]; // Buy = USDT (გაცემა); Sell = DOGE (გაცემა);
         $sell = strtoupper($sell);
         $amount_str = strval($amount);
+
+        $bal = WhitebitPrivate::getBalance($sell)['main_balance'];
+
+        if ($bal > 0) 
+        {
+            WhitebitPrivate::transferMoney('main', 'spot', $sell, $bal);
+        }
 
         $funds = UserWallet::where([
             'user_id' => $user_id,

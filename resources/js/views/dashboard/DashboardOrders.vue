@@ -14,7 +14,7 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Hash</th>
+                            <th>ID</th>
                             <th>Created at</th>
                             <th>Amount</th>
                             <th>Fee</th>
@@ -24,15 +24,12 @@
                     </thead>
                     <tbody>
                         <tr v-for="each in history">
-                            <td>{{ each.transactionId }}</td>
-                            <td>{{ formatDateFromUnixTimestamp(each.createdAt) }}</td>
-                            <td>{{ each.amount }} USD</td>
-                            <td>{{ each.fee }} USD</td>
-                            <td>{{ (each.method == 1) ? 'Deposit' : 'Withdraw' }}</td>
-                            <td>
-                                <span v-bind:class="(getStatus(each.status) == 'Success') ? 'up' : 'down'">{{
-                                    getStatus(each.status) }} </span>
-                            </td>
+                            <td>{{ each.uniqueId }}</td>
+                            <td>{{ each.created_at }}</td>
+                            <td>{{ applyPercentageReduction(each.amount, 1.1) }}</td>
+                            <td>1.1%</td>
+                            <td>{{ each.method }}</td>
+                            <td>{{ each.status }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -61,10 +58,10 @@ export default {
     methods: {
         getHistory() {
             this.$api.getHistory().then(response => {
-                this.history = response.records;
+                this.history = response;
             });
         },
-
+        
         formatDateFromUnixTimestamp(timestamp) {
             const date = new Date(timestamp * 1000);
             const options = {
@@ -80,6 +77,14 @@ export default {
             const formatter = new Intl.DateTimeFormat('en-US', options);
             return formatter.format(date);
         },
+
+        applyPercentageReduction(number, percentage) {
+            const decimal = percentage / 100;
+            const result = number - (number * decimal);
+
+            return result;
+        },
+
 
         getStatus(code) {
             let out;

@@ -22,4 +22,28 @@ class Helpers
     {
         return ['USD','EUR','GBP','JPY','CAD','AUD','CHF','CNY','HKD','NZD','SEK','KRW','SGD','NOK','MXN','INR','RUB','ZAR','TRY','BRL','TWD','DKK','PLN','THB'];
     }
+
+    static function getStatus($id) 
+    {
+        $id = intval($id);
+
+        $codes = [
+            'Pending' => [1, 2, 6, 10, 11, 12, 13, 14, 15, 16, 17],
+            'Success' => [3, 7],
+            'Canceled' => [4, 9],
+            'Unconfirmed by user' => [5],
+            'Uncredited' => [22],
+            'Partially successful' => [18]
+        ];
+
+        foreach($codes as $value => $code) 
+        {
+            if (in_array($id, $code)) 
+            {
+                return $value;
+            }
+        }
+
+        return 'Unknown';
+    }
 }

@@ -51,11 +51,11 @@ class User extends Authenticatable
     {
         if ($type === 'crypto') 
         {
-            return UserWallet::whereNotNull('address')->get();
+            return UserWallet::whereNotNull('address')->where('user_id', '=', $this->id)->get();
         }
         else if ($type == 'fiat')
         {
-            return UserWallet::whereNull('address')->get();
+            return UserWallet::whereNull('address')->where('user_id', '=', $this->id)->get();
         }
         else
         {
@@ -63,7 +63,7 @@ class User extends Authenticatable
         }
     }
 
-    public function generateWallets($wallets=['BTC', 'USDT', 'ETH', 'MATIC', 'USD', 'EUR', 'UAH', 'GEL']) {
+    public function generateWallets($wallets=['BTC', 'USDT', 'ETH', 'MATIC', 'DOGE', 'USD', 'EUR', 'UAH', 'GEL']) {
         $assets = WhitebitPublic::getAssets();
 
         foreach ($wallets as $value) 

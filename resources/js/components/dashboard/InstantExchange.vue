@@ -97,6 +97,13 @@
                 });
             },
 
+            calculatePercentage(value, percentage) {
+                const decimal = percentage / 100;
+                const result = value * decimal;
+                
+                return result;
+            },
+
             handleSubmit(side) {
                 let market = `${this.send}_${this.get}`;
                 let amount = this.amount;
@@ -120,6 +127,13 @@
                                 text: result.errors[key][0]
                             });
                         }
+
+                        return;
+                    } else if ('success' in result && !result.success) {
+                        this.$snackbar.add({
+                            type:'error',
+                            text: (result.message) ? result.message : 'Something went wrong'
+                        });
 
                         return;
                     }

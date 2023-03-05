@@ -83,13 +83,14 @@ export default {
                 }
 
                 if (response.data.success && response.data.hasOwnProperty('token')) {
-                    this.$router.push('/app');
                     this.$auth.login(response.data.token, response.data.user);
 
                     this.$snackbar.add({
                         type: 'success',
                         text: 'Successfully logged in!'
                     });
+
+                    window.location.href = '/app';
                 }
 
             }).catch(error => {

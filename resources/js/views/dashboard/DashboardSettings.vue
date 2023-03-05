@@ -5,7 +5,7 @@
         </aside>
 
         <main>
-            <h1>DashboardSettings</h1>
+            <h1>Comming soon</h1>
         </main>
     </div>
 </template>

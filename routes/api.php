@@ -54,7 +54,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Api', 'middleware' => 'json.r
         Route::get('/user/wallets/{type}', 'WalletsController@myWallets')->name('api.user.wallets');
 
         Route::post('/user/balance/deposit', 'BalanceController@deposit')->name('api.user.balance.deposit');
-        Route::get('/user/balance/withdraw', 'BalanceController@withdraw')->name('api.user.balance.withdraw');
+        Route::post('/user/balance/withdraw', 'BalanceController@withdraw')->name('api.user.balance.withdraw');
+        Route::post('/user/balance/withdraw/crypto', 'BalanceController@withdrawCrypto')->name('api.user.balance.withdraw.crypto');
         Route::get('/user/balance/history', 'BalanceController@history')->name('api.user.balance.history');
         Route::post('/user/balance/exchange', 'BalanceController@exchange')->name('api.user.balance.exchange');
         Route::post('/user/exchange/quick', 'BalanceController@quickExchange')->name('api.user.exchange.quick');

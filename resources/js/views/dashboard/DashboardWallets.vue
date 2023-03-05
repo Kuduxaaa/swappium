@@ -30,9 +30,10 @@
                             <span @click="copy(key)"><i class="bi bi-clipboard"></i></span>
                         </div>
                     </div>
-                    <div v-else class="text-center">
-                        <button @click="depositFiat(key)" class="btn btn-primary-soft mx-2">Deposit now</button>
-                        <button @click="depositFiat(key)" class="btn btn-primary-soft mx-2">Withdraw</button>
+                    <div class="text-center mt-4">
+                        <button v-if="tabPos" @click="depositFiat(key)" class="btn btn-primary-soft mx-2">Deposit
+                            now</button>
+                        <button @click="withdraw(key)" class="btn btn-primary-soft mx-2">Withdraw</button>
                     </div>
 
                 </div>
@@ -55,6 +56,7 @@ export default {
     data() {
         return {
             wallets: [],
+            wallet_type: 'crypto',
             tabPos: false
         }
     },
@@ -62,7 +64,8 @@ export default {
     methods: {
         getWallets(type) {
             this.$api.getWallets(type).then(response => {
-                this.wallets = response
+                this.wallets = response;
+                this.wallet_type = type;
             });
         },
 
@@ -82,75 +85,272 @@ export default {
             this.getWallets((!this.tabPos) ? 'crypto' : 'fiat');
         },
 
-        depositFiat(key) {
-            this.$swal({
-                title: 'Deposit',
-                html: `
+        withdraw(key) {
+            this.$api.getAssets().then(response => {
+                let ticker = response[this.wallets[key]['ticker']];
+                let selectHtml = '';
+
+                if (ticker['can_withdraw'] && ticker['networks']) {
+                    const options = ticker.networks.withdraws;
+                    const selectElement = document.createElement('select');
+
+                    selectElement.setAttribute('name', 'network');
+                    selectElement.style = 'width: 100%;background: #2c2f39;color: #fff;font-weight: 600;border: none;border-radius: 24px;padding: 19px 18px;-moz-appearance: none;-webkit-appearance: none;appearance: none;cursor: pointer;';
+
+                    options.forEach((option) => {
+                        const optionElement = document.createElement('option');
+                        optionElement.value = option;
+                        optionElement.text = option;
+
+                        if (option == ticker['networks']['default']) {
+                            optionElement.setAttribute('selected', 'selected');
+                        }
+
+                        selectElement.appendChild(optionElement);
+                    });
+
+                    selectHtml = selectElement.outerHTML;
+                }
+
+                this.$swal({
+                    title: 'Withdraw',
+                    html: (this.wallet_type == 'fiat') ? `
                 <p class="text-secondary dep-sub">From here you can top up your deposit, note that our fee is 1%</p>
                 <div class="flex field">
                     <div class="input-group dep">
-                        <input type="number" placeholder="Enter amount" autocomplete="off" class="input-dep" style="width: 100%" name="get">
+                        <input type="number" placeholder="Enter your card number" autocomplete="off" class="input-dep" style="width: 100%" name="card_num">
                     </div>
                 </div>
+
+                <div class="flex field">
+                    <div class="input-group dep">
+                        <input type="text" placeholder="Enter your phone number" autocomplete="off" class="input-dep" style="width: 100%" name="phone_num">
+                    </div>
+                </div>
+
+                <div class="flex field">
+                    <div class="input-group dep">
+                        <input type="number" placeholder="Amount" autocomplete="off" class="input-dep" style="width: 100%" name="amount">
+                    </div>
+                </div>
+                ` : `<p class="text-secondary dep-sub">From here you can top up your deposit, note that our fee is 1%</p>
+                <div class="flex field">
+                    <div class="input-group dep">
+                        <input type="text" placeholder="Enter wallet address" autocomplete="off" class="input-dep" style="width: 100%" name="wallet">
+                    </div>
+                </div>
+
+                <div class="flex field">
+                    <div class="input-group dep">
+                        <input type="text" placeholder="Enter amount" autocomplete="off" class="input-dep" style="width: 100%" name="amount">
+                    </div>
+                </div>
+
+                <div class="flex field">
+                    ${selectHtml}
+                </div>
+                <p style="text-align:left;margin-bottom:18px;">You can choose a custom network</p>
                 `,
-                showCancelButton: false,
-                confirmButtonText: 'Submit',
-                showLoaderOnConfirm: true,
-            }).then((result) => {
-                const amount = document.querySelector('.input-dep').value;
+                    showCancelButton: false,
+                    confirmButtonText: 'Submit',
+                }).then((result) => {
+                    if (this.wallet_type == 'crypto') {
+                        const amount = document.querySelector('input[name="amount"]').value;
+                        const wallet = document.querySelector('input[name="wallet"]').value;
+                        const network = document.querySelector('select[name="network"]').value;
 
-                if (result.isConfirmed) {
-                    this.$swal.fire({
-                        title: 'Get started!',
-                        html: '<p class="text-secondary mb-4">Now a tab will open where you can top up the balance, follow the instructions to the end</p>',
-                        timer: 2000,
-                        timerProgressBar: true,
+                        if (result.isConfirmed) {
+                            this.$axios.post('user/balance/withdraw/crypto', {
+                                ticker: this.wallets[key].ticker,
+                                amount: amount,
+                                address: wallet,
+                                network: network
 
-                        didOpen: () => {
-                            this.$swal.showLoading();
-                        },
-                        willClose: () => {
-                            clearInterval(this.timerInterval)
+                            }).then(response => {
+                                if ('success' in response.data && !response.data.success) {
+                                    this.$snackbar.add({
+                                        type: 'error',
+                                        text: response.data.message
+                                    });
+
+                                    return;
+                                } else if ('errors' in response.data) {
+                                    for (const key in response.data.errors) {
+                                        this.$snackbar.add({
+                                            type: 'error',
+                                            text: response.data.errors[key][0]
+                                        });
+                                    }
+                                }
+
+                                if ('sucess' in response.data) {
+                                    this.$snackbar.add({
+                                        type: 'success',
+                                        text: 'Withdraw request successfully created'
+                                    });
+                                }
+
+                            }).catch(error => {
+                                this.$snackbar.add({
+                                    type: 'error',
+                                    text: error.response.data.message
+                                });
+
+                                return;
+                            });
                         }
+                    } else {
+                        const card_num = document.querySelector('input[name="card_num"]').value;
+                        const phone_num = document.querySelector('input[name="phone_num"]').value;
+                        const amount = document.querySelector('input[name="amount"]').value;
+
+                        if (result.isConfirmed) {
+                            this.$axios.post('user/balance/withdraw', {
+                                ticker: this.wallets[key].ticker,
+                                amount: amount,
+                                card_number: card_num,
+                                phone: phone_num
+
+                            }).then(response => {
+                                if ('success' in response.data && !response.data.success) {
+                                    this.$snackbar.add({
+                                        type: 'error',
+                                        text: response.data.message
+                                    });
+
+                                    return;
+                                } else if ('errors' in response.data) {
+                                    for (const key in response.data.errors) {
+                                        this.$snackbar.add({
+                                            type: 'error',
+                                            text: response.data.errors[key][0]
+                                        });
+                                    }
+                                }
+
+                                if ('sucess' in response.data) {
+                                    this.$snackbar.add({
+                                        type: 'success',
+                                        text: 'Withdraw request successfully created'
+                                    });
+                                }
+
+                            }).catch(error => {
+                                this.$snackbar.add({
+                                    type: 'error',
+                                    text: error.response.data.message
+                                });
+
+                                return;
+                            });
+                        }
+                    }
+                });
+            });
+        },
+
+        depositFiat(key) {
+            this.$api.getAssets().then(response => {
+                let ticker = response[this.wallets[key]['ticker']];
+                let selectHtml = '';
+
+                if (ticker['can_withdraw'] && ticker['providers']) {
+                    const options = ticker.providers.withdraws;
+                    const selectElement = document.createElement('select');
+
+                    selectElement.setAttribute('name', 'provider');
+                    selectElement.style = 'width: 100%;background: #2c2f39;color: #fff;font-weight: 600;border: none;border-radius: 24px;padding: 19px 18px;-moz-appearance: none;-webkit-appearance: none;appearance: none;cursor: pointer;';
+
+                    options.forEach((option) => {
+                        const optionElement = document.createElement('option');
+                        optionElement.value = option;
+                        optionElement.text = option;
+
+                        if (option == 'VISAMASTER') {
+                            optionElement.setAttribute('selected', 'selected');
+                        }
+
+                        selectElement.appendChild(optionElement);
                     });
 
-                    this.$axios.post('user/balance/deposit', {
-                        ticker: this.wallets[key].ticker,
-                        amount: amount,
-                        provider: JSON.parse(this.wallets[key].provider)[0]
+                    selectHtml = selectElement.outerHTML;
+                }
 
-                    }).then(response => {
-                        if ('success' in response.data && !response.data.success) {
+                this.$swal({
+                    title: 'Deposit',
+                    html: `
+                <p class="text-secondary dep-sub">From here you can top up your deposit, note that our fee is 1%</p>
+                <div class="flex field">
+                    <div class="input-group dep">
+                        <input type="number" placeholder="Enter amount" autocomplete="off" class="input-dep" style="width: 100%" name="amount">
+                    </div>
+                </div>
+                <div class="flex field">
+                    ${selectHtml}
+                </div>
+                <p style="text-align:left;margin-bottom:18px;">You can choose a custom network</p>
+                `,
+                    showCancelButton: false,
+                    confirmButtonText: 'Submit'
+                }).then((result) => {
+                    const amount = document.querySelector('input[name="amount"]').value;
+                    const provider = document.querySelector('select[name="provider"]').value;
+
+                    if (result.isConfirmed) {
+                        this.$swal.fire({
+                            title: 'Get started!',
+                            html: '<p class="text-secondary mb-4">Now a tab will open where you can top up the balance, follow the instructions to the end</p>',
+                            timer: 2000,
+                            timerProgressBar: true,
+
+                            didOpen: () => {
+                                this.$swal.showLoading();
+                            },
+
+                            willClose: () => {
+                                clearInterval(this.timerInterval)
+                            }
+                        });
+
+                        this.$axios.post('user/balance/deposit', {
+                            ticker: this.wallets[key].ticker,
+                            amount: amount,
+                            provider: provider
+
+                        }).then(response => {
+                            if ('success' in response.data && !response.data.success) {
+                                this.$snackbar.add({
+                                    type: 'error',
+                                    text: response.data.message
+                                });
+
+                                return;
+                            } else if ('errors' in response.data) {
+                                for (const key in response.data.errors) {
+                                    this.$snackbar.add({
+                                        type: 'error',
+                                        text: response.data.errors[key][0]
+                                    });
+                                }
+                            }
+
+                            if ('url' in response.data) {
+                                window.open(response.data.url, '_blank', 'width=500,height=800');
+                                return
+                            }
+
+                        }).catch(error => {
                             this.$snackbar.add({
                                 type: 'error',
-                                text: response.data.message
+                                text: error.response.data.message
                             });
 
                             return;
-                        } else if ('errors' in response.data) {
-                            for (const key in response.data.errors) {
-                                this.$snackbar.add({
-                                    type: 'error',
-                                    text: response.data.errors[key][0]
-                                });
-                            }
-                        }
-
-                        if ('url' in response.data) {
-                            window.open(response.data.url, '_blank', 'width=500,height=800');
-                            return
-                        }
-
-                    }).catch(error => {
-                        this.$snackbar.add({
-                            type: 'error',
-                            text: error.response.data.message
                         });
+                    }
+                })
 
-                        return;
-                    });
-                }
-            })
+            });
         }
     },
 
@@ -192,6 +392,25 @@ main {
     font-weight: 600;
     cursor: pointer;
     user-select: none;
+}
+
+select {
+    max-width: 160px;
+    width: 100%;
+    background-color: #2c2f39;
+    color: #fff;
+    font-weight: 600;
+    border: none;
+
+    margin-left: 6px;
+    border-top-right-radius: 24px;
+    border-bottom-right-radius: 24px;
+    padding: 0px 18px;
+
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
 }
 
 .tab-wrapper .tab.selected {

@@ -15,8 +15,16 @@
                     <p class="text-secondary mt-4">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled</p>
                     
                     <div class="pt-4">
-                        <a class="btn btn-primary me-3" href="#">Sign up to join</a>
-                        <a class="btn btn-primary-soft" href="#">Token Distribution</a>
+                        <router-link to="/auth/register" v-if="!isAuthed">
+                            <a class="btn btn-primary me-3" href="#">Sign up to join</a>
+                        </router-link>
+                        <router-link to="/app" v-else>
+                            <a class="btn btn-primary me-3" href="#">Go to console</a>
+                        </router-link>
+
+                        <router-link to="/about">
+                            <a class="btn btn-primary-soft" href="#">About swappium</a>
+                        </router-link>
                     </div>
                 </div>
             </div>
@@ -34,6 +42,22 @@ import MarqueeComponent from '../../components/MarqueeComponent.vue';
 import FooterComponent from '../../components/FooterComponent.vue';
 import GetAppComponent from '../../components/GetAppComponent.vue'
 import FaqComponent from '../../components/FaqComponent.vue'
+</script>
+
+<script>
+export default {
+    name: 'Home',
+
+    data() {
+        return {
+            isAuthed: false,
+        }
+    },
+
+    mounted() {
+        this.isAuthed = this.$auth.check();
+    }
+}
 </script>
 
 <style scoped>
