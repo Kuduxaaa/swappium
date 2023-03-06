@@ -20,8 +20,8 @@
                     <router-link v-if="!isLogedin" class="action-link" to="/auth/login">
                         <button class="btn btn-primary-soft nomax px-4">Login</button>
                     </router-link>
-                    
-                    <router-link class="action-link" :to="(isLogedin) ? '/app' : '/auth/register'">
+
+                    <router-link class="action-link" :to="(isLogedin) ? '/console' : '/auth/register'">
                         <button class="btn btn-primary">Get started</button>
                     </router-link>
                 </div>

@@ -87,7 +87,7 @@ const routes = [
     },
 
     // Auth routes
-    
+
     {
         path: '/auth/login',
         name: 'login',
@@ -107,9 +107,9 @@ const routes = [
     },
 
     // Dashboard
-    
+
     {
-        path: '/app',
+        path: '/console',
         name: 'dashboard',
         component: DashboardHome,
         meta: {
@@ -118,7 +118,7 @@ const routes = [
     },
 
     {
-        path: '/app/markets',
+        path: '/console/markets',
         name: 'dashboard.markets',
         component: DashboardMarkets,
         meta: {
@@ -127,7 +127,7 @@ const routes = [
     },
 
     {
-        path: '/app/orders',
+        path: '/console/orders',
         name: 'dashboard.orders',
         component: DashboardOrders,
         meta: {
@@ -136,7 +136,7 @@ const routes = [
     },
 
     {
-        path: '/app/settings',
+        path: '/console/settings',
         name: 'dashboard.settings',
         component: DashboardSettings,
         meta: {
@@ -145,7 +145,7 @@ const routes = [
     },
 
     {
-        path: '/app/wallets',
+        path: '/console/wallets',
         name: 'dashboard.wallets',
         component: DashboardWallets,
         meta: {
@@ -154,14 +154,14 @@ const routes = [
     },
 
     {
-        path: '/app/markets/:ticker',
+        path: '/console/markets/:ticker',
         name: 'dashboard.ticker',
         component: TickerDetails,
         meta: {
             requiresAuth: true
         }
     },
-    
+
     // Handlers
 
     {

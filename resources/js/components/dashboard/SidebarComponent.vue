@@ -7,7 +7,7 @@
         <div class="user">
             <div class="user-info">
                 <span class="user-name text-bold">${{ userBalance }}</span>
-            </div>  
+            </div>
         </div>
     </div>
 
@@ -22,43 +22,43 @@
         </section>
 
         <section class="menu-items">
-            <div v-bind:class="(routePath == '/app') ? 'item selected' : 'item'">
-                <router-link to="/app">
+            <div v-bind:class="(routePath == '/console') ? 'item selected' : 'item'">
+                <router-link to="/console">
                     <i class="bi bi-grid"></i>
                     Home
                 </router-link>
             </div>
 
-            <div v-bind:class="(routePath == '/app/markets') ? 'item selected' : 'item'">
-                <router-link to="/app/markets">
+            <div v-bind:class="(routePath == '/console/markets') ? 'item selected' : 'item'">
+                <router-link to="/console/markets">
                     <i class="bi bi-shop"></i>
                     Markets
                 </router-link>
             </div>
 
-            <div v-bind:class="(routePath == '/app/wallets') ? 'item selected' : 'item'">
-                <router-link to="/app/wallets">
+            <div v-bind:class="(routePath == '/console/wallets') ? 'item selected' : 'item'">
+                <router-link to="/console/wallets">
                     <i class="bi bi-wallet2"></i>
                     My Wallet
                 </router-link>
             </div>
 
-            <div v-bind:class="(routePath == '/app/orders') ? 'item selected' : 'item'">
-                <router-link to="/app/orders">
+            <div v-bind:class="(routePath == '/console/orders') ? 'item selected' : 'item'">
+                <router-link to="/console/orders">
                     <i class="bi bi-journal-text"></i>
                     Orders
                 </router-link>
             </div>
 
-            <!-- <div v-if="userData.role == 2" v-bind:class="(routePath == '/app/settings') ? 'item selected' : 'item'">
-                <router-link to="/app/settings">
+            <!-- <div v-if="userData.role == 2" v-bind:class="(routePath == '/console/settings') ? 'item selected' : 'item'">
+                <router-link to="/console/settings">
                     <i class="bi bi-circle"></i>
                     God Mode
                 </router-link>
             </div> -->
 
-            <div v-bind:class="(routePath == '/app/settings') ? 'item selected' : 'item'">
-                <router-link to="/app/settings">
+            <div v-bind:class="(routePath == '/console/settings') ? 'item selected' : 'item'">
+                <router-link to="/console/settings">
                     <i class="bi bi-gear"></i>
                     Settings
                 </router-link>
@@ -71,7 +71,7 @@
                     <i class="bi bi-box-arrow-left"></i>
                     logout
                 </a>
-            </div>  
+            </div>
         </section>
     </div>
 </template>
@@ -100,7 +100,7 @@ export default {
         getBalance() {
             // this.$axios.get('user/balance').then(response => {
             //     this.userBalance = response.data.amount;
-                
+
             // }).catch(response => {
 
             //     if (response.response.status == 401) {

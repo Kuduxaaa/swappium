@@ -17,7 +17,7 @@ import 'vue3-snackbar/dist/style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 
-import './assets/css/app.css'
+import './assets/app.css';
 
 axios.defaults.baseURL = '/api/';
 

@@ -11,7 +11,7 @@
                 <h1 class="login-title">The Crypto Asset Exchange</h1>
                 <p>Swappium</p>
             </div>
-            
+
             <div class="col-md-7">
                 <div class="login d-flex align-items-center py-5">
                     <div class="container">
@@ -59,13 +59,13 @@ export default {
             this.$router.push('/');
         }
     },
-    
+
     methods: {
         login() {
             axios.post('auth/login', {
                 'email': this.email,
                 'password': this.password
-                
+
             }).then(response => {
                 if (!response.data.success) {
                     let message = 'Something went wrong';
@@ -90,7 +90,7 @@ export default {
                         text: 'Successfully logged in!'
                     });
 
-                    window.location.href = '/app';
+                    window.location.href = '/console';
                 }
 
             }).catch(error => {

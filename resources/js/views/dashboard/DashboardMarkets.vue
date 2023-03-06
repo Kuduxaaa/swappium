@@ -34,8 +34,8 @@
                         <tr v-for="(ticker, index) in tickers">
                             <td>{{ index + 1 }}</td>
                             <td>
-                                <img v-lazy="{ src: ticker.icon, loading: '/assets/img/icons/loading.svg', error: '/assets/img/icons/err_.png' }" class="coinicon" /> 
-                                <router-link class="cname" :to="'/app/markets/' + ticker.name.replace('/', '-').toString().toLowerCase()">{{ ticker.name }}</router-link>
+                                <img v-lazy="{ src: ticker.icon, loading: '/assets/img/icons/loading.svg', error: '/assets/img/icons/err_.png' }" class="coinicon" />
+                                <router-link class="cname" :to="'/console/markets/' + ticker.name.replace('/', '-').toString().toLowerCase()">{{ ticker.name }}</router-link>
                             </td>
                             <td>{{ ticker.price }}</td>
                             <td>
@@ -44,7 +44,7 @@
                             <td>{{ ticker.quote_volume }}</td>
                             <td>{{ ticker.base_volume }}</td>
                             <td>
-                                <router-link class="btn btn-primary-soft detail-btn" :to="'/app/markets/' + ticker.name.replace('/', '-').toString().toLowerCase()">Details</router-link>
+                                <router-link class="btn btn-primary-soft detail-btn" :to="'/console/markets/' + ticker.name.replace('/', '-').toString().toLowerCase()">Details</router-link>
                             </td>
                         </tr>
                     </tbody>
@@ -102,7 +102,7 @@ export default {
             this.$api.getSortedTickers().then(response => {
                 for (let key in response) {
                     var data = response[key];
-                    
+
                     if (this.markets.includes(key)) {
                         this.tickers.push({
                             name: key.replace('_', '/'),
