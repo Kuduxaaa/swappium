@@ -11,4 +11,11 @@ export default defineConfig({
             'resources/js/app.js',
         ]),
     ],
+
+    resolve: {
+        alias: {
+            '/assets': '/public/assets',
+            'assets': '/public/assets',
+        },
+    },
 });
