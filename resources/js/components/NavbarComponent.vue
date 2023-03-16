@@ -11,10 +11,13 @@
 
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-4">
-                    <a href="#" class="nav-item nav-link active">Home</a>
-                    <a href="#" class="nav-item nav-link">Profile</a>
-                    <a href="#" class="nav-item nav-link">Messages</a>
-                    <a href="#" class="nav-item nav-link disabled" tabindex="-1">Reports</a>
+                    <router-link to="/" class="nav-item nav-link active">Home</router-link>
+                    <router-link to="/about" class="nav-item nav-link active">About</router-link>
+                    <router-link to="/privacy" class="nav-item nav-link active">Privacy</router-link>
+                    <a href="tel:+995551240280" class="nav-item nav-link active">
+                        <i class="bi bi-telephone"></i>
+                        Call
+                    </a>
                 </div>
                 <div class="navbar-nav ms-auto">
                     <router-link v-if="!isLogedin" class="action-link" to="/auth/login">
@@ -52,8 +55,13 @@
     box-shadow: 0 0.375rem 1.5rem 0 rgba(0, 0, 0, 0.125);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: saturate(180%) blur(18px);
+    -webkit-backdrop-filter: saturate(180%) blur(18px); /* for older versions of Safari and iOS */
+    -moz-backdrop-filter: saturate(180%) blur(18px); /* for older versions of Firefox */
+    -ms-backdrop-filter: saturate(180%) blur(18px); /* for older versions of Microsoft Edge and IE */
+    -o-backdrop-filter: saturate(180%) blur(18px); /* for older versions of Opera */
 
-    padding: 16px;
+
+    padding: 12px;
     position: fixed;
     margin-top: 38px;
     width: 100%;
@@ -100,7 +108,7 @@
     }
 
     .navbar-collapse {
-        height: 100vh;
+        height: calc(100vh - 80px);
         display: grid;
     }
 

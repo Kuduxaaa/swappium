@@ -49,6 +49,29 @@ body {
     color: var(--color-primary) !important;
 }
 
+.form-control {
+    background-color: rgba(228, 228, 228, 0.03);
+    border: 1px solid #404040;
+    color: rgb(187, 191, 204) !important;
+    font-size: 20px;
+    border-radius: 14px;
+}
+
+.form-control::placeholder {
+    font-size: 1rem;
+}
+
+.form-control:disabled {
+    background-color: rgba(228, 228, 228, 0.03);
+    color: rgb(120, 123, 132) !important;
+    cursor: not-allowed;
+}
+
+.form-control:focus {
+    border: 1px solid var(--color-primary);
+    background-color: rgba(228, 228, 228, 0.04);
+}
+
 .btn.btn-primary {
     background-color: var(--color-primary) !important;
     border-color: var(--color-primary);
@@ -70,6 +93,25 @@ body {
     opacity: 0.25;
     pointer-events: none;
     z-index: -1; 
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: #bdbdbd;
+    background-color: #1f2128;
+}
+
+.nav-tabs {
+    border-bottom: 1px solid #484f57;
+}
+
+.nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
+    border-color:#484f57;
+    background: #191b20;
+    color: var(--color-primary);
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    border-color: #484f57;
 }
 
 @media (max-width: 991.98px) {

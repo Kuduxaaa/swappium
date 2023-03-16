@@ -1,7 +1,7 @@
 <template>
     <div class="container-fluid">
         <div class="row no-gutter">
-            <div class="col-md-5 d-none d-md-flex bg-image">
+            <div class="col-md-5 d-block bg-image">
                 <div class="logo-image">
                     <router-link to="/">
                         <img src="/assets/img/logo.png" alt="Swappium">
@@ -150,7 +150,7 @@ export default {
 
 @media only screen and (max-width: 779px) {
     .bg-image {
-        display: flex !important;
+        display: none !important;
     }
 }
 
@@ -161,7 +161,6 @@ export default {
     background-repeat: no-repeat;
     background-clip: border-box;
 
-    display: block !important;
     background-color: var(--color-accent);
     padding: 80px
 }

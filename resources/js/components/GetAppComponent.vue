@@ -5,7 +5,7 @@
                 <div class="row justify-content-between align-items-center">
                     <div class="col-md-7 my-3 text-md-start text-center">
                         <h3 class="h2 fw-400">Get the app now!</h3>
-                        <p class="m-0 text-secondary">Since 1931 dancers, dance-connoisseurs, and dance fans travel far and wide to experience</p>
+                        <p class="m-0 text-secondary">Trade cryptocurrencies on the go with Swappium's mobile app</p>
                     </div>
                     <div class="col-lg-4 col-md-5 my-3 text-center text-md-end">
                         <a class="btn btn-primary-soft mx-2" href="#">

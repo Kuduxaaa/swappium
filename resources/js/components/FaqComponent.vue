@@ -14,36 +14,36 @@
                             <div class="accordion-item shadow-sm">
                                 <h2 class="accordion-header" id="headingOne_1">
                                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne_1" aria-expanded="false" aria-controls="collapseOne_1">
-                                        How do we make transactions?
+                                        What is swappium?
                                     </button>
                                 </h2>
                                 <div id="collapseOne_1" class="accordion-collapse collapse show" aria-labelledby="headingOne_1" data-bs-parent="#home_cy_acc_1">
                                     <div class="accordion-body collapse show">
-                                        <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                                        Swappium is a leading platform for buying, selling, and trading cryptocurrencies. Our user-friendly interface and advanced technology make it easy for anyone to manage their digital assets.
                                     </div>
                                 </div>
                             </div>
                             <div class="accordion-item shadow-sm">
                                 <h2 class="accordion-header" id="headingTwo_2">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo_2" aria-expanded="false" aria-controls="collapseTwo_2">
-                                        What benefits do I get when using this application?
+                                        How do I create an account on Swappium?
                                     </button>
                                 </h2>
                                 <div id="collapseTwo_2" class="accordion-collapse collapse" aria-labelledby="headingTwo_2" data-bs-parent="#home_cy_acc_1">
                                     <div class="accordion-body">
-                                        <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                                        To create an account on Swappium, simply click on the "Sign Up" button on our homepage and follow the instructions. You'll need to provide some basic information and verify your email address.
                                     </div>
                                 </div>
                             </div>
                             <div class="accordion-item shadow-sm">
                                 <h2 class="accordion-header" id="headingThree_3">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree_3" aria-expanded="false" aria-controls="collapseThree_3">
-                                        Can i transact using tokens?
+                                        What types of cryptocurrencies can I trade on Swappium?
                                     </button>
                                 </h2>
                                 <div id="collapseThree_3" class="accordion-collapse collapse" aria-labelledby="headingThree_3" data-bs-parent="#home_cy_acc_1">
                                     <div class="accordion-body">
-                                        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                                        Swappium supports a wide variety of cryptocurrencies, including Bitcoin, Ethereum, Litecoin, and many more. We're constantly adding new coins to our platform to give our users the best possible trading experience.
                                     </div>
                                 </div>
                             </div>
@@ -54,36 +54,36 @@
                             <div class="accordion-item shadow-sm">
                                 <h2 class="accordion-header" id="headingOne_1_2">
                                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne_1_2" aria-expanded="false" aria-controls="collapseOne_1_2">
-                                        What is an ICO?
+                                        How do I deposit funds into my Swappium wallet?
                                     </button>
                                 </h2>
                                 <div id="collapseOne_1_2" class="accordion-collapse collapse show" aria-labelledby="headingOne_1_2" data-bs-parent="#home_cy_acc_2">
                                     <div class="accordion-body collapse show">
-                                        <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                                        To deposit funds into your Swappium wallet, simply navigate to the "Deposit" page and select the currency you wish to deposit. Follow the instructions to complete the transaction and your funds will be credited to your wallet.
                                     </div>
                                 </div>
                             </div>
                             <div class="accordion-item shadow-sm">
                                 <h2 class="accordion-header" id="headingTwo_2_2">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo_2_2" aria-expanded="false" aria-controls="collapseTwo_2_2">
-                                        Can i transact using tokens?
+                                        Is my information secure on Swappium?
                                     </button>
                                 </h2>
                                 <div id="collapseTwo_2_2" class="accordion-collapse collapse" aria-labelledby="headingTwo_2_2" data-bs-parent="#home_cy_acc_2">
                                     <div class="accordion-body">
-                                        <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                                        Yes, Swappium takes the security of our users' information very seriously. We use advanced encryption and security protocols to ensure that your data is always protected.
                                     </div>
                                 </div>
                             </div>
                             <div class="accordion-item shadow-sm">
                                 <h2 class="accordion-header" id="headingThree_3_2">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree_3_2" aria-expanded="false" aria-controls="collapseThree_3_2">
-                                        How do we avoid the disadvantages of using an ICO?
+                                        How do I contact Swappium support?
                                     </button>
                                 </h2>
                                 <div id="collapseThree_3_2" class="accordion-collapse collapse" aria-labelledby="headingThree_3_2" data-bs-parent="#home_cy_acc_2">
                                     <div class="accordion-body">
-                                        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                                        If you need help with anything on Swappium, our support team is available 24/7 to assist you. Simply click on the "Contact Us" link at the bottom of our homepage and fill out the form to get in touch with us.
                                     </div>
                                 </div>
                             </div>

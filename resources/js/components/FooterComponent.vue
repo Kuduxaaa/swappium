@@ -9,7 +9,7 @@
                                 <img src="/assets/img/logo.png" alt="Swappium" width="70px">
                             </div>
 
-                            <p class="text-secondary">Crypto collectibles and non-fungible tokens (NFTs). Buy, sell, and discover exclusive digital items.</p>
+                            <p class="text-secondary">Discover the power of digital assets with Swappium. Buy, sell, and trade cryptocurrencies on our user-friendly platform.</p>
                         </div>
                         <div class="col-lg-3 col-sm-6 my-3">
                             <h5 class="footer-title">Company & Team</h5>

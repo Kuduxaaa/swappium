@@ -1,7 +1,7 @@
 <template>
     <div class="container-fluid">
         <div class="row no-gutter">
-            <div class="col-md-5 d-none d-md-flex bg-image">
+            <div class="col-md-5 d-block bg-image">
                 <div class="logo-image">
                     <router-link to="/">
                         <img src="/assets/img/logo.png" alt="Swappium">
@@ -127,7 +127,6 @@ export default {
     background-repeat: no-repeat;
     background-clip: border-box;
 
-    display: block !important;
     background-color: var(--color-accent);
     padding: 80px
 }
@@ -155,25 +154,17 @@ export default {
     margin-bottom: 3rem !important;
 }
 
-.form-control {
-    background-color: rgba(228, 228, 228, 0.03);
-    border: 1px solid #404040;
-    color: rgb(228, 228, 228) !important;
-    font-size: 20px;
-    border-radius: 14px;
-}
 
-.form-control::placeholder {
-    font-size: 1rem;
-}
-
-.form-control:focus {
-    border: 1px solid var(--color-primary);
-    background-color: rgba(228, 228, 228, 0.04);
-}
 
 .login-form-wrapper {
     max-width: 412px;
     margin: auto;
 }
+
+@media only screen and (max-width: 779px) {
+    .bg-image {
+        display: none !important;
+    }
+}
+
 </style>

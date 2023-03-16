@@ -12,7 +12,7 @@
             <div class="row align-items-center justify-content-center home-content">
                 <div class="col-lg-6 text-center">
                     <h2 class="display-4"><span class="text-gradient">Swappium</span> is the best</h2>
-                    <p class="text-secondary mt-4">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled</p>
+                    <p class="text-secondary mt-4">Welcome to Swappium, the premier platform for buying, selling, and trading cryptocurrencies. With our advanced technology and user-friendly interface, managing your digital assets has never been easier. Whether you're a seasoned trader or new to the world of crypto, Swappium has everything you need to succeed. Join us today and take control of your financial future</p>
 
                     <div class="pt-4">
                         <router-link to="/auth/register" v-if="!isAuthed">
