@@ -59,5 +59,6 @@ Route::group(['namespace' => 'App\Http\Controllers\Api', 'middleware' => 'json.r
         Route::get('/user/balance/history', 'BalanceController@history')->name('api.user.balance.history');
         Route::post('/user/balance/exchange', 'BalanceController@exchange')->name('api.user.balance.exchange');
         Route::post('/user/exchange/quick', 'BalanceController@quickExchange')->name('api.user.exchange.quick');
+        Route::post('/user/password/change', 'LoginController@changePassword')->name('api.user.password.change');
     });
 });

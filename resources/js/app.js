@@ -10,7 +10,6 @@ import Auth from './auth';
 import Api from './api';
 import VueLazyLoad from 'vue3-lazyload'
 import VueSweetalert2 from 'vue-sweetalert2';
-import Web3 from "web3";
 
 import 'sweetalert2/dist/sweetalert2.min.css';
 import 'vue3-snackbar/dist/style.css';
@@ -24,13 +23,11 @@ axios.defaults.baseURL = '/api/';
 const app = createApp(App);
 const auth = new Auth();
 const api = new Api(axios);
-const web3 = new Web3(window.ethereum);
 
 app.config.globalProperties.$router = router;
 app.config.globalProperties.$axios = axios;
 app.config.globalProperties.$api = api;
 app.config.globalProperties.$auth = auth;
-app.config.globalProperties.$web3 = web3;
 
 app.use(router);
 app.use(SnackbarService);

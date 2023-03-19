@@ -29,34 +29,37 @@
                             <form class="mt-4" method="post">
                                 <div class="form-group mb-3">
                                     <input type="email" placeholder="Email address" required="" autofocus=""
-                                        class="form-control p-3 shadow-sm px-4" disabled>
+                                        class="form-control p-3 shadow-sm px-4" v-model="info['email']" disabled>
                                 </div>
 
                                 <div class="form-group mb-3">
                                     <input type="text" placeholder="Your full name" required=""
-                                        class="form-control shadow-sm px-4 p-3 text-primary">
+                                        class="form-control shadow-sm px-4 p-3 text-primary" v-model="info['fullName']">
                                 </div>
 
                                 <button type="submit" class="btn btn-primary btn-block mt-4 w-100 shadow-sm">Update
                                     informartion</button>
                             </form>
 
-                            
+
                         </div>
 
                         <div class="col-md-4">
-                            <form class="mt-4" method="post">
+                            <form class="mt-4" method="post" @submit.prevent="changePassword">
                                 <div class="form-group mb-3">
-                                    <input type="password" name="old_pasword" placeholder="Your current password" required=""
-                                        class="form-control shadow-sm px-4 p-3 text-primary" v-model="pass['old_password']">
+                                    <input type="password" name="old_pasword" placeholder="Your current password"
+                                        required="" class="form-control shadow-sm px-4 p-3 text-primary"
+                                        v-model="pass['old_password']">
                                 </div>
                                 <div class="form-group mb-3">
                                     <input type="password" name="password" placeholder="New password" required=""
                                         class="form-control shadow-sm px-4 p-3 text-primary" v-model="pass['password']">
                                 </div>
                                 <div class="form-group mb-3">
-                                    <input type="password" name="password_confirmation" placeholder="Confirm new password" required=""
-                                        class="form-control shadow-sm px-4 p-3 text-primary" v-model="pass['password_confirmation']">
+                                    <input type="password" name="password_confirmation"
+                                        placeholder="Confirm new password" required=""
+                                        class="form-control shadow-sm px-4 p-3 text-primary"
+                                        v-model="pass['password_confirmation']">
                                 </div>
 
                                 <button type="submit" class="btn btn-primary btn-block mt-4 w-100 shadow-sm">Change
@@ -78,31 +81,86 @@
 </script>
 
 <script>
-import { ref } from 'vue';
+    import {
+        ref
+    } from 'vue';
 
-export default {
-    name: 'DashboardSettings',
+    export default {
+        name: 'DashboardSettings',
 
-    data() {
-        return {
-            pass: {
-                old_password: ref(''),
-                password: ref(''),
-                password_confirmation: ref('')
+        data() {
+            return {
+                pass: {
+                    old_password: ref(''),
+                    password: ref(''),
+                    password_confirmation: ref('')
+                },
+
+                info: {
+                    email: ref(''),
+                    fullName: ref('')
+                }
             }
-        }
-    },
+        },
 
-    components: {
-        SidebarComponent
-    },
+        components: {
+            SidebarComponent
+        },
 
-    methods: {
-        changePassword() {
+        methods: {
+            changePassword() {
+                if (this.pass.old_password.length == 0 || this.pass.password.length == 0 || this.pass
+                    .password_confirmation.length == 0) {
+                    this.$snackbar.add({
+                        type: 'error',
+                        text: 'Please fill all field'
+                    });
+                    return;
+                }
 
+                this.$axios.post('user/password/change', {
+                        old_password: this.pass.old_password,
+                        password: this.pass.password,
+                        password_confirmation: this.pass.password_confirmation
+                    })
+                    .then(response => {
+                        if ('success' in response) {
+                            if (response.success) {
+                                this.$snackbar.add({
+                                    type: 'success',
+                                    text: response.data.message
+                                });
+
+                            } else {
+                                this.$snackbar.add({
+                                    type: 'error',
+                                    text: response.data.message
+                                });
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error.response.data);
+                        this.$snackbar.add({
+                            type: 'error',
+                            text: error.response.data.message
+                        });
+                    });
+            },
+
+
+            updateInformation() {
+
+            }
+        },
+
+        mounted() {
+            let user = this.$auth.user;
+
+            this.info.email = user.email;
+            this.info.fullName = user.name;
         }
     }
-}
 </script>
 
 <style scoped>
