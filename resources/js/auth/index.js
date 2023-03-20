@@ -26,12 +26,21 @@ class Auth {
         return !! this.token;
     }
 
-    logout () {
+    async logout() {
         window.localStorage.removeItem('user');
         window.localStorage.removeItem('token');
 
         this.token = null;
         this.user = null;
+
+        try
+        {
+            await axios.post('user/logout');
+        }
+        catch (error)
+        {
+            console.log(error);
+        }
     }
 
     getUser () {

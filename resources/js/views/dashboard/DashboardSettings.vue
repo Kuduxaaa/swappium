@@ -68,7 +68,43 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+                <div class="tab-pane fade mb-4" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <button class="btn btn-primary mt-4 w-100">Generate new API Key</button>
+                    <div class="table-responsive mt-4">
+                        <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Key name</th>
+                                <th>Key</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td style="color:lightgray;">My API Key</td>
+                                <td style="color:lightgray;">xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</td>
+                                <td>
+                                    <a href="" style="color: red;text-decoration: none;">Delete</a>
+                                    <a href="" class="mx-3" style="color: gray;text-decoration: none;">Disable</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>My API Key #02</td>
+                                <td>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</td>
+                                <td>
+                                    <a href="" style="color: red;text-decoration: none;">Delete</a>
+                                    <a href="" class="mx-3" style="text-decoration: none;">Enable</a>
+                                </td>
+                            </tr>
+                            <!-- Add more rows for additional API keys -->
+                        </tbody>
+                    </table>
+                    </div>
+
+                </div>
                 <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
             </div>
 
@@ -124,12 +160,15 @@
                         password_confirmation: this.pass.password_confirmation
                     })
                     .then(response => {
-                        if ('success' in response) {
-                            if (response.success) {
+                        if ('success' in response.data) {
+                            if (response.data.success) {
                                 this.$snackbar.add({
                                     type: 'success',
                                     text: response.data.message
                                 });
+
+                                this.$auth.logout();
+                                this.$router.push('/auth/login');
 
                             } else {
                                 this.$snackbar.add({
@@ -140,7 +179,6 @@
                         }
                     })
                     .catch(error => {
-                        console.log(error.response.data);
                         this.$snackbar.add({
                             type: 'error',
                             text: error.response.data.message

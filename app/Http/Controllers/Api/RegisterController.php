@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\Models\ReferralCode;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
@@ -15,7 +16,7 @@ class RegisterController extends Controller
     public function register (Request $request)
     {
         $validator = Validator::make(
-            $request->all(), 
+            $request->all(),
             [
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|max:255|unique:users',
@@ -41,14 +42,14 @@ class RegisterController extends Controller
         $user = User::create([
             'name' => $name,
             'email' => $email,
-            'password' => bcrypt($password),
+            'password' => Hash::make($password),
             'referral_code' => $referral,
         ]);
 
         $user->generateWallets();
 
         ReferralCode::create([
-            'code' => Str::random(18), 
+            'code' => Str::random(18),
             'user_id' => $user->id
         ]);
 

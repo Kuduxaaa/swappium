@@ -12,7 +12,7 @@ use Laravel\Passport\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
-    
+
 
     /**
      * The attributes that are mass assignable.
@@ -49,7 +49,7 @@ class User extends Authenticatable
 
     public function getWallets($type='all')
     {
-        if ($type === 'crypto') 
+        if ($type === 'crypto')
         {
             return UserWallet::whereNotNull('address')->where('user_id', '=', $this->id)->get();
         }
@@ -63,10 +63,10 @@ class User extends Authenticatable
         }
     }
 
-    public function generateWallets($wallets=['BTC', 'USDT', 'ETH', 'MATIC', 'DOGE', 'USD', 'EUR', 'UAH', 'GEL']) {
+    public function generateWallets($wallets=['BTC', 'USDT', 'ETH', 'MATIC', 'DOGE', 'USD', 'EUR']) {
         $assets = WhitebitPublic::getAssets();
 
-        foreach ($wallets as $value) 
+        foreach ($wallets as $value)
         {
             $asset = $assets[$value];
             $data[$value] = $asset;
@@ -78,7 +78,7 @@ class User extends Authenticatable
                 'amount' => 0
             ];
 
-            if (array_key_exists('networks', $asset)) 
+            if (array_key_exists('networks', $asset))
             {
                 if (array_key_exists('default', $asset['networks']))
                 {
@@ -100,7 +100,7 @@ class User extends Authenticatable
                 }
             }
 
-            if (array_key_exists('network', $data)) 
+            if (array_key_exists('network', $data))
             {
                 $data['address'] = WhitebitPrivate::createNewAddress($value, $data['network'])['account']['address'] ?? null;
             }

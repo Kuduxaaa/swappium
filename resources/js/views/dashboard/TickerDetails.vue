@@ -187,12 +187,9 @@ export default {
                 this.candles.push(newCandle);
                 this.apchart.updateSeries([{ data: this.candles }]);
             }
-
-            console.log(this.candles.length);
         },
 
         timestampToDate(timestamp) {
-            // create a new Date object and pass the timestamp as an argument
             const date = new Date(timestamp * 1000);
 
             // extract the day, month, and year from the date object
@@ -234,7 +231,7 @@ export default {
                     document.title = `${data.params[0][2]} | ${market} | Swappium`
 
                     if (this.last_price == 0) {
-                        this.last_price = data.params[0][2];        
+                        this.last_price = data.params[0][2];
                         this.tradeprice = ref(this.last_price);
                     }
 
@@ -362,12 +359,10 @@ export default {
         this.getDetails();
         this.subscribeWhitebit();
 
-        this.getOrderbooks();        
+        this.getOrderbooks();
         setInterval(() => {
             this.getOrderbooks();
         }, 5000);
-
-        console.log(this.orderbook)
     },
 
     destroyed() {

@@ -1,5 +1,5 @@
 <template>
-    <div>      
+    <div>
         <section class="py-5 bg-mode">
             <div class="container">
                 <div class="row justify-content-between align-items-center">
@@ -8,12 +8,12 @@
                         <p class="m-0 text-secondary">Trade cryptocurrencies on the go with Swappium's mobile app</p>
                     </div>
                     <div class="col-lg-4 col-md-5 my-3 text-center text-md-end">
-                        <a class="btn btn-primary-soft mx-2" href="#">
+                        <a class="btn btn-primary-soft mx-2" @click="commingSoon">
                             <span class="fab fa-google-play"></span>
                             <span class="btn--text">Play Store</span>
                         </a>
-                        
-                        <a class="btn btn-primary-soft" href="#">
+
+                        <a class="btn btn-primary-soft mx-2" @click="commingSoon">
                             <span class="fab fa-apple"></span>
                             <span class="btn--text">App Store</span>
                         </a>
@@ -23,3 +23,18 @@
         </section>
     </div>
 </template>
+
+<script>
+export default {
+    name: 'GetAppComponent',
+
+    methods: {
+        commingSoon() {
+            this.$snackbar.add({
+                type: 'info',
+                text: 'Application available comming soon'
+            });
+        }
+    }
+}
+</script>

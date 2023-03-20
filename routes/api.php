@@ -18,12 +18,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['namespace' => 'App\Http\Controllers\Api', 'middleware' => 'json.response'], function () {     
+Route::group(['namespace' => 'App\Http\Controllers\Api', 'middleware' => 'json.response'], function () {
     Route::group(['prefix' => 'auth', 'middleware' => 'throttle:10,3'], function () {
         Route::post('/login', 'LoginController@login')->name('api.login');
         Route::post('/register', 'RegisterController@register')->name('api.register');
     });
-    
+
     Route::group(['prefix' => 'whitebit'], function () {
         Route::get('/assets', 'WhitebitController@assets')->name('api.whitebit.assets');
         Route::get('/assets/keys', 'WhitebitController@assetKeys')->name('api.whitebit.assets.keys');
@@ -43,12 +43,12 @@ Route::group(['namespace' => 'App\Http\Controllers\Api', 'middleware' => 'json.r
     });
 
     Route::get('/crypto/prices', 'CoingeckoController@getPrices')->name('api.crypto.prices');
-    
+
 
     Route::get('/merchant/options', [\App\Http\Controllers\MerchantController::class, 'getOptions'])->name('merchant.options')->middleware('swappium.api');
     Route::post('/merchant/generate', [\App\Http\Controllers\MerchantController::class, 'generateLink'])->name('merchant.generate')->middleware('swappium.api');
     Route::get('/merchant/transaction/status', [\App\Http\Controllers\MerchantController::class, 'getTransactionStatus'])->name('merchant.transaction.status')->middleware('swappium.api');
-    
+
     Route::group(['middleware' => 'auth:api'], function() {
         Route::get('/user/balance', 'BalanceController@getBalance')->name('api.user.balance');
         Route::get('/user/wallets/{type}', 'WalletsController@myWallets')->name('api.user.wallets');
@@ -60,5 +60,6 @@ Route::group(['namespace' => 'App\Http\Controllers\Api', 'middleware' => 'json.r
         Route::post('/user/balance/exchange', 'BalanceController@exchange')->name('api.user.balance.exchange');
         Route::post('/user/exchange/quick', 'BalanceController@quickExchange')->name('api.user.exchange.quick');
         Route::post('/user/password/change', 'LoginController@changePassword')->name('api.user.password.change');
+        Route::post('/user/logout', 'LoginController@logout')->name('api.user.logout');
     });
 });

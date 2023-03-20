@@ -36,6 +36,17 @@ class LoginController extends Controller
         ]);
     }
 
+    public function logout(Request $request)
+    {
+        $request->user()->token()->revoke();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User logged out successfully',
+        ]);
+    }
+
+
     public function changePassword(Request $request)
     {
         $request->validate([
@@ -55,15 +66,13 @@ class LoginController extends Controller
         $old_password = $request->input('old_password');
         $new_password = $request->input('password');
 
-        // check if old password matches current password
         if (!Hash::check($old_password, $user->password)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Old password does not match current password',
+                'message' => 'Old password does not match',
             ]);
         }
 
-        // update the password
         $user->password = Hash::make($new_password);
         $user->save();
 
