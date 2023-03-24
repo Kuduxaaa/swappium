@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\Request;
 
 class CoingeckoController extends Controller
@@ -28,7 +29,7 @@ class CoingeckoController extends Controller
             $url = 'https://api.coingecko.com/api/v3/simple/price?' . $query;
             $content = file_get_contents($url);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $msg = $e->getMessage();
             $msg = (strpos($msg, ':')) ? explode(':', $msg) : [$msg];
             $msg = $msg[3] ?? $msg[0];

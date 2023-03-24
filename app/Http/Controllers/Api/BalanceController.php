@@ -13,7 +13,7 @@ use App\Models\UserTransaction;
 
 class BalanceController extends Controller
 {
-    public function getBalance(Request $request)
+    public function getFiatBalance(Request $request)
     {
         if (!$request->user())
         {

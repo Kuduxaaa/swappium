@@ -110,4 +110,9 @@ class User extends Authenticatable
 
         return true;
     }
+
+    public function ApiKey()
+    {
+        return $this->hasMany(ApiKey::class);
+    }
 }

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('api_key_id');
             $table->foreign('api_key_id')->references('id')->on('api_keys');
             $table->string('ticker');
+            $table->string('network');
             $table->text('address');
             $table->timestamps();
         });

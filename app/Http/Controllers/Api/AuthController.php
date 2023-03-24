@@ -3,17 +3,55 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\User;
-use App\Models\UserWallet;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use App\Models\ReferralCode;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class RegisterController extends Controller
+class AuthController extends Controller
 {
-    public function register (Request $request)
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|max:255',
+            'password' => 'required|min:8',
+        ]);
+
+        $email = $request->email;
+        $password = $request->password;
+
+        if (Auth::attempt(['email' => $email, 'password' => $password])) {
+            $user = Auth::user();
+            $token = $user->createToken('SwappiumPrivateProfile')->accessToken;
+
+            return response()->json([
+                'success' => true,
+                'token' => $token,
+                'user' => $user,
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'User email or password are incorrect',
+        ]);
+    }
+
+    public function logout(Request $request): JsonResponse
+    {
+        $request->user()->token()->revoke();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User logged out successfully',
+        ]);
+    }
+
+    public function register (Request $request): JsonResponse
     {
         $validator = Validator::make(
             $request->all(),

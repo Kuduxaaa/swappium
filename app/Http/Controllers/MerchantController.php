@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Classes\WhitebitPrivate;
-use App\Models\ApiKeys;
+use App\Models\User;
+use App\Models\ApiKey;
 use App\Models\Merchants;
-use App\Models\MerchantSettings;
-use App\Models\MerchantTransaction;
-use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request;
+use App\Classes\WhitebitPublic;
+use App\Classes\WhitebitPrivate;
+use App\Models\MerchantSettings;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Redirector;
+use App\Models\MerchantTransaction;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\Foundation\Application;
 
 class MerchantController extends Controller
 {
-    public function generateLink(Request $request)
+    public function generateLink(Request $request): JsonResponse
     {
         $request->validate([
             'address' => 'required',
@@ -22,7 +29,7 @@ class MerchantController extends Controller
         ]);
 
         $key = $request->header('X-Swappium-Key');
-        $api = ApiKeys::where('key', $key)->first();
+        $api = ApiKey::where('key', $key)->first();
 
         $address = $request->get('address');
         $return_link = $request->get('return_link');
@@ -62,10 +69,18 @@ class MerchantController extends Controller
         ]);
     }
 
-    public function getOptions(Request $request) 
+    public function getOptions(Request $request): JsonResponse
     {
         $key = $request->header('X-Swappium-Key');
-        $api = ApiKeys::where('key', $key)->first();
+        $api = ApiKey::where('key', $key)->first();
+
+        if (!$api->enabled)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'API key is not verified'
+            ]);
+        }
 
         $options = Merchants::select('id', 'ticker', 'address')->where('api_key_id', $api->id)->get();
 
@@ -83,7 +98,8 @@ class MerchantController extends Controller
         ]);
     }
 
-    public function index($transactionId) {
+    public function index($transactionId): View|Factory|Redirector|RedirectResponse|Application
+    {
         $merchantSettings = MerchantSettings::where('unique_slug', $transactionId)->first();
 
         if (!$merchantSettings) {
@@ -95,7 +111,7 @@ class MerchantController extends Controller
         ]);
     }
 
-    public function process($transactionId, Request $request) 
+    public function process($transactionId, Request $request): JsonResponse|Redirector|RedirectResponse|Application
     {
         $merchantSettings = MerchantSettings::where('unique_slug', $transactionId)->first();
 
@@ -115,7 +131,7 @@ class MerchantController extends Controller
         ]);
 
         $data = WhitebitPrivate::withdrawCrypto($ticker, $amount, $address, $network, $user->email, $id);
-        
+
         if (array_key_exists('errors', $data))
         {
             return response()->json([
@@ -145,5 +161,100 @@ class MerchantController extends Controller
         }
 
         return WhitebitPrivate::getHistory(0, 1, $merchantSettings['unique_slug']);
+    }
+
+    public function createUserMerchant(Request $request) 
+    {
+        $request->validate([
+            'ticker' => 'required',
+            'address' => 'required',
+            'network' => 'required'
+        ]);
+
+        $key = $request->header('X-Swappium-Key');
+        $api = ApiKey::where('key', $key)->first();
+        $ticker = $request->input('ticker');
+        $address = $request->input('address');
+        $network = $request->input('network');
+
+        $assets = WhitebitPublic::getAssetkeys();
+
+        if (!in_array($ticker, $assets)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ticker not found'
+            ]);
+        }
+
+        if (!$api) {
+            return response()->json(['success' => false, 'message' => 'Provided API key is invalid'], 400);
+        }
+
+        if (!$api->enabled)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'API key is not verified'
+            ]);
+        }
+        
+        Merchants::create([
+            'api_key_id' => $api->id,
+            'ticker' => $ticker,
+            'network' => $network,
+            'address' => $address
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Merchant successfully created']);
+    }
+
+    public function getUserMerchants(Request $request) 
+    {
+        $user = $request->user();
+
+        $user_db = User::find($user->id);
+        $api_keys = $user_db->ApiKey()->get();
+
+        $merchants = [];
+        foreach ($api_keys as $api_key) {
+            $merchants = array_merge($merchants, $api_key->merchants()->get()->toArray());
+        }
+
+        return response()->json([
+            'success' => true,
+            'merchants' => $merchants
+        ]);
+    }
+
+    public function deleteUserMerchant(Request $request) 
+    {
+        $request->validate(['merchant_id' => 'required']);
+        $merchant_id = $request->input('merchant_id');
+        $user = $request->user();
+
+        $merchant = Merchants::where('id', $merchant_id)->first();
+
+        if (!$merchant) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Merchant not found'
+            ]);
+        }
+
+        $api = ApiKey::where('id', $merchant->api_key_id)->first();
+
+        if (!$api || $api && $api->user_id != $user->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Merchant not found'
+            ]);
+        }
+
+        $merchant->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Merchant deleted'
+        ]);
     }
 }

@@ -5,8 +5,8 @@
         <h4 class="mt-3">Total balance</h4>
         <p class="text-secondary mb-4">Here you can see your total balance</p>
 
-        <p class="balance">0.000 BTC</p>
-        <p class="balance-usd">0.00 USD</p>
+        <p class="balance">{{ balances.btc }} BTC</p>
+        <p class="balance-usd">{{ balances.usd }} USD</p>
 
         <router-link to="/console/wallets" class="btn btn-primary mt-4 mb-4">Go to wallets</router-link>
     </div>
@@ -18,12 +18,44 @@ export default {
 
     data() {
         return {
-            timerInterval: null
+            timerInterval: null,
+            balances: {
+                btc: '0.000',
+                usd: '0.000'
+            }
         }
     },
 
     methods: {
+        getBalance(ticker) {
+            this.$axios.post('user/wallet/balance', {ticker: ticker}).then(response => {
+                if ('success' in response.data) {
+                    if (response.data.success && 'amount' in response.data) {
+                        this.balances[ticker.toLowerCase()] = response.data.amount.toString();
 
+                    } else {
+                        this.$snackbar.add({
+                            type: 'error',
+                            text: response.data.message ?? 'Woops... something went wrong'
+                        });
+
+                        return 0;
+                    }
+                }
+            }).catch(error => {
+                this.$snackbar.add({
+                    type: 'error',
+                    text: 'Woops... something went wrong'
+                });
+
+                console.log(error);
+            })
+        }
+    },
+
+    mounted() {
+        this.getBalance('BTC')
+        this.getBalance('USD')
     }
 }
 </script>

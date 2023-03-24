@@ -18,8 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('key');
-            $table->string('key_name');
-            $table->boolean('enabled')->default(1); // 1 => enabled, 0 => disabled
+            $table->string('key_name')->nullable();
+            $table->boolean('enabled')->default(0); // 1 => enabled, 0 => disabled
             $table->timestamps();
         });
     }

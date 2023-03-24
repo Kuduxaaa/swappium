@@ -33,7 +33,7 @@ import TotalBalanceComponent from '../../components/dashboard/TotalBalanceCompon
 
 <script>
 export default {
-    components: {
+    component: {
         SidebarComponent,
         CoinInfoCard,
         InstantExchange,

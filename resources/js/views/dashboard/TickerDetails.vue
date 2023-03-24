@@ -17,12 +17,12 @@
 
                     <div class="params flex">
                         <div class="param">
-                            <p class="text-secondary null-m change">Change</p>
+                            <p class="text-secondary null-m change">Change (24h)</p>
                             <h4 v-bind:class="(details['change'][0] == '-') ? 'down' : 'up'">{{ details['change'] }}</h4>
                         </div>
 
                         <div class="param">
-                            <p class="text-secondary null-m change">Volume</p>
+                            <p class="text-secondary null-m change">Volume (24h)</p>
                             <h4>{{ formatter.format(details['quote_volume']) }}</h4>
                         </div>
                     </div>
@@ -135,6 +135,7 @@ export default {
             candles: [],
             apchart: null,
             orderbook: {},
+            orderbook_interval: null,
             candles_limit: 300
         }
     },
@@ -360,9 +361,13 @@ export default {
         this.subscribeWhitebit();
 
         this.getOrderbooks();
-        setInterval(() => {
+        this.orderbook_interval = setInterval(() => {
             this.getOrderbooks();
         }, 5000);
+    },
+
+    beforeUnmount() {
+        clearInterval(this.orderbook_interval);
     },
 
     destroyed() {

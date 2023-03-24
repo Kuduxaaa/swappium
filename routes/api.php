@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MerchantController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,8 +21,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group(['namespace' => 'App\Http\Controllers\Api', 'middleware' => 'json.response'], function () {
     Route::group(['prefix' => 'auth', 'middleware' => 'throttle:10,3'], function () {
-        Route::post('/login', 'LoginController@login')->name('api.login');
-        Route::post('/register', 'RegisterController@register')->name('api.register');
+        Route::post('/login', 'AuthController@login')->name('api.login');
+        Route::post('/register', 'AuthController@register')->name('api.register');
     });
 
     Route::group(['prefix' => 'whitebit'], function () {
@@ -44,22 +45,33 @@ Route::group(['namespace' => 'App\Http\Controllers\Api', 'middleware' => 'json.r
 
     Route::get('/crypto/prices', 'CoingeckoController@getPrices')->name('api.crypto.prices');
 
+    
+    Route::post('/merchant/create', [MerchantController::class, 'createUserMerchant'])->name('merchant.create')->middleware('swappium.api');
+    Route::get('/merchant/options', [MerchantController::class, 'getOptions'])->name('merchant.options')->middleware('swappium.api');
+    Route::post('/merchant/generate', [MerchantController::class, 'generateLink'])->name('merchant.generate')->middleware('swappium.api');
+    Route::get('/merchant/transaction/status', [MerchantController::class, 'getTransactionStatus'])->name('merchant.transaction.status')->middleware('swappium.api');
 
-    Route::get('/merchant/options', [\App\Http\Controllers\MerchantController::class, 'getOptions'])->name('merchant.options')->middleware('swappium.api');
-    Route::post('/merchant/generate', [\App\Http\Controllers\MerchantController::class, 'generateLink'])->name('merchant.generate')->middleware('swappium.api');
-    Route::get('/merchant/transaction/status', [\App\Http\Controllers\MerchantController::class, 'getTransactionStatus'])->name('merchant.transaction.status')->middleware('swappium.api');
+    Route::group(['middleware' => 'auth:api'], function() {   
+        Route::get('/user/merchants', [MerchantController::class, 'getUserMerchants'])->name('user.merchants');
+        Route::post('/user/merchant/delete', [MerchantController::class, 'deleteUserMerchant'])->name('user.merchant.delete');
 
-    Route::group(['middleware' => 'auth:api'], function() {
-        Route::get('/user/balance', 'BalanceController@getBalance')->name('api.user.balance');
+        Route::get('/user/balance', 'BalanceController@getFiatBalance')->name('api.user.balance');
         Route::get('/user/wallets/{type}', 'WalletsController@myWallets')->name('api.user.wallets');
+        Route::post('/user/wallet/balance', 'WalletsController@getBalance')->name('api.user.wallet.balance');
 
         Route::post('/user/balance/deposit', 'BalanceController@deposit')->name('api.user.balance.deposit');
         Route::post('/user/balance/withdraw', 'BalanceController@withdraw')->name('api.user.balance.withdraw');
         Route::post('/user/balance/withdraw/crypto', 'BalanceController@withdrawCrypto')->name('api.user.balance.withdraw.crypto');
         Route::get('/user/balance/history', 'BalanceController@history')->name('api.user.balance.history');
         Route::post('/user/balance/exchange', 'BalanceController@exchange')->name('api.user.balance.exchange');
+
         Route::post('/user/exchange/quick', 'BalanceController@quickExchange')->name('api.user.exchange.quick');
-        Route::post('/user/password/change', 'LoginController@changePassword')->name('api.user.password.change');
-        Route::post('/user/logout', 'LoginController@logout')->name('api.user.logout');
+        
+        Route::post('/user/logout', 'AuthController@logout')->name('api.user.logout');
+
+        Route::post('/user/password/change', 'UserController@changePassword')->name('api.user.password.change');
+        Route::get('/user/api/keys', 'UserController@getAPIs')->name('api.user.api.keys');
+        Route::post('/user/api/key/generate', 'UserController@generateApiKey')->name('api.user.api.generate')->middleware('throttle:10,3');
+        Route::post('/user/api/key/delete', 'UserController@deleteApiKey')->name('api.user.api.delete');
     });
 });

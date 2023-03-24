@@ -21,7 +21,7 @@
                 <div class="input-group">
                     <label for="get">You get</label>
                     <input type="text" autocomplete="off" disabled class="input" name="get"
-                        :value="calcedVal">
+                        :value="calcedVal.toFixed(3)">
                 </div>
 
                 <select v-model="get" @change="calculateB">
@@ -94,6 +94,7 @@
                 this.$api.getTicker(this.send).then(result => {
                     this.tickerDetails = result[market];
                     this.calcedVal = this.tickerDetails['last_price'] * this.amount;
+                    this.calcedVal = this.calcedVal - this.calculatePercentage(this.calcedVal, 0.1); // I know this should be price + fee but...
                 });
             },
 
@@ -143,7 +144,7 @@
                         text: 'Exchange successful!'
                     });
                 });
-            }
+            },
         },
 
         mounted() {

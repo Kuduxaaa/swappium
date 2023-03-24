@@ -13,6 +13,7 @@ class Merchants extends Model
         'id',
         'api_key_id',
         'ticker',
+        'network',
         'address'
     ];
 }

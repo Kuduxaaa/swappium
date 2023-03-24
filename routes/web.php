@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MerchantController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,5 +18,5 @@ Route::get('/{any?}', function () {
     return view('app');
 })->where('any', '^(?!api)(?!pay).*$');
 
-Route::get('/pay/{transactionId}', [\App\Http\Controllers\MerchantController::class, 'index'])->name('merchant');
-Route::post('/pay/{transactionId}', [\App\Http\Controllers\MerchantController::class, 'process'])->name('merchant.process');
+Route::get('/pay/{transactionId}', [MerchantController::class, 'index'])->name('merchant');
+Route::post('/pay/{transactionId}', [MerchantController::class, 'process'])->name('merchant.process');

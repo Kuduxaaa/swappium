@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\ApiKeys;
+use App\Models\ApiKey;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -26,7 +26,7 @@ class SwappiumKeyRequiured
         }
 
         $key = $request->header('X-Swappium-Key');
-        $api = ApiKeys::where('key', $key)->first();
+        $api = ApiKey::where('key', $key)->first();
 
         if (!$api) 
         {
@@ -34,7 +34,18 @@ class SwappiumKeyRequiured
                 'Content-Type' => 'application/json'
             ]);
         }
-
-        return $next($request);
+        else
+        {
+            if ($api->enabled == 1) 
+            {
+                return $next($request);
+            }
+            else
+            {
+                return new Response(['success' => false, 'message' => 'The API key is not verified'], 400, [
+                    'Content-Type' => 'application/json'
+                ]);
+            } 
+        }
     }
 }
