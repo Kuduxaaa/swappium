@@ -75,5 +75,6 @@ class Kernel extends HttpKernel
         'json.response' => \App\Http\Middleware\ForceJsonResponse::class,
         'cors' => \App\Http\Middleware\Cors::class,
         'swappium.api' => \App\Http\Middleware\SwappiumKeyRequiured::class,
+        'verified' => \App\Http\Middleware\VerifyRequired::class
     ];
 }

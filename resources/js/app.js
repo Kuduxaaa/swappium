@@ -10,6 +10,7 @@ import Auth from './auth';
 import Api from './api';
 import VueLazyLoad from 'vue3-lazyload'
 import VueSweetalert2 from 'vue-sweetalert2';
+import i18n from './i18n/index.js';
 
 import 'sweetalert2/dist/sweetalert2.min.css';
 import 'vue3-snackbar/dist/style.css';
@@ -28,7 +29,9 @@ app.config.globalProperties.$router = router;
 app.config.globalProperties.$axios = axios;
 app.config.globalProperties.$api = api;
 app.config.globalProperties.$auth = auth;
+app.config.globalProperties.$i18n = i18n;
 
+app.use(i18n);
 app.use(router);
 app.use(SnackbarService);
 app.use(VueSweetalert2);

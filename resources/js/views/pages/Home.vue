@@ -1,6 +1,5 @@
 <template>
     <header>
-        <MarqueeComponent />
         <NavbarComponent />
     </header>
 
@@ -11,8 +10,8 @@
         <div class="container">
             <div class="row align-items-center justify-content-center home-content">
                 <div class="col-lg-6 text-center">
-                    <h2 class="display-4"><span class="text-gradient">Swappium</span> is the best</h2>
-                    <p class="text-secondary mt-4">Welcome to Swappium, the premier platform for buying, selling, and trading cryptocurrencies. With our advanced technology and user-friendly interface, managing your digital assets has never been easier. Whether you're a seasoned trader or new to the world of crypto, Swappium has everything you need to succeed. Join us today and take control of your financial future</p>
+                    <h2 class="display-4"><span class="text-gradient">Swappium</span> {{ $t('welcome') }}</h2>
+                    <p class="text-secondary mt-4">{{ $t('home_description') }}</p>
 
                     <div class="pt-4">
                         <router-link to="/auth/register" v-if="!isAuthed">
@@ -38,7 +37,6 @@
 
 <script setup>
 import NavbarComponent from '../../components/NavbarComponent.vue';
-import MarqueeComponent from '../../components/MarqueeComponent.vue';
 import FooterComponent from '../../components/FooterComponent.vue';
 import GetAppComponent from '../../components/GetAppComponent.vue'
 import FaqComponent from '../../components/FaqComponent.vue'

@@ -1,6 +1,5 @@
 <template>
     <header>
-        <MarqueeComponent />
         <NavbarComponent />
     </header>
 
@@ -128,7 +127,6 @@
 
 <script setup>
 import NavbarComponent from '../../components/NavbarComponent.vue';
-import MarqueeComponent from '../../components/MarqueeComponent.vue';
 import FooterComponent from '../../components/FooterComponent.vue';
 </script>
 

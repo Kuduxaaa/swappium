@@ -15,6 +15,21 @@
             </div>
 
             <div class="wallets">
+                <div class="wallet add-wallet" @click="addWallet">
+                    <div class="container h-100">
+                        <div class="row align-items-center h-100">
+                            <div class="col-6 mx-auto">
+                                <div class="jumbotron">
+                                    <p class="display-1 text-center mt-4"><i class="bi bi-plus"></i></p>
+                                    <p class="text-center bold">Add new wallet</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+
                 <div class="wallet" v-for="(wallet, key) in  wallets">
                     <img v-bind:src="'/assets/img/icons/' + wallet.ticker.toLowerCase() + '_.png'" :alt="wallet.name"
                         class="icon">
@@ -57,7 +72,8 @@ export default {
         return {
             wallets: [],
             wallet_type: 'crypto',
-            tabPos: false
+            tabPos: false,
+            assets: []
         }
     },
 
@@ -249,6 +265,64 @@ export default {
             });
         },
 
+        addWallet() {
+            if (this.assets.length == 0) {
+                this.$api.getAssets().then(assets => {
+                    this.assets = assets;
+
+                    this.addWalletStepTwo();
+                }).catch(error => {
+                    console.log(error);
+                });
+            } else {
+                this.addWalletStepTwo();
+            }
+        },
+
+        addWalletStepTwo() {
+            let select = document.createElement('select');
+            select.setAttribute('name', 'ticker')
+            select.style = 'width: 100%;background: #2c2f39;color: #fff;font-weight: 600;border: none;border-radius: 24px;padding: 19px 18px;-moz-appearance: none;-webkit-appearance: none;appearance: none;cursor: pointer;';
+
+            for (let key in this.assets) {
+                let option = document.createElement('option');
+                option.setAttribute('value', key);
+                option.textContent = key;
+                select.appendChild(option);
+            }
+
+            this.$swal({
+                    title: 'New wallet',
+                    html: `
+                <p style="text-align:left;margin-top:27px;color: #9b9caa;margin-bottom: -7px;margin-left: 8px;">Select crypto currency</p>
+                <div class="flex field">
+                    ${select.outerHTML}
+                </div>
+                `,
+                    showCancelButton: false,
+                    confirmButtonText: 'Submit'
+                }).then((result) => {
+                    const currency = document.querySelector('select[name="ticker"]').value;
+
+                    if (result.isConfirmed) {
+                        this.$axios.post('user/wallet/add', {ticker: currency}).then(result => {
+                            console.log(result.data);
+
+                            this.$snackbar.add({
+                                type: (result.data.success) ? 'success' : 'error',
+                                text: ('message' in result.data) ? result.data.message : 'Something went wrong'
+                            });
+                            
+                            this.getWallets('crypto');
+
+                        }).catch((error) => {
+                            console.log(error.response);   
+                        })
+                    }
+                })
+
+        },
+
         depositFiat(key) {
             this.$api.getAssets().then(response => {
                 let ticker = response[this.wallets[key]['ticker']];
@@ -369,6 +443,9 @@ main {
     padding: 40px 40px;
 }
 
+.add-wallet {
+    cursor: pointer;
+}
 
 .btn-primary-soft {
     box-shadow: none;

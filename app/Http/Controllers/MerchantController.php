@@ -160,7 +160,10 @@ class MerchantController extends Controller
             ]);
         }
 
-        return WhitebitPrivate::getHistory(0, 1, $merchantSettings['unique_slug']);
+        return [
+            'success' => true,
+            'details' => WhitebitPrivate::getHistory(0, 1, $merchantSettings['unique_slug'])['records'] ?? []
+        ];
     }
 
     public function createUserMerchant(Request $request) 

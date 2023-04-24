@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\Models\ReferralCode;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\kyc;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -59,8 +60,11 @@ class AuthController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|max:255|unique:users',
                 'password' =>'required|string|min:8|confirmed',
+                'doc_front' => 'required|file|mimes:jpeg,jpg,png',
+                'doc_type' => 'required|string|max:255'
             ]
         );
+        
 
         if ($validator->fails())
         {
@@ -72,10 +76,14 @@ class AuthController extends Controller
             return response()->json($response, 400);
         }
 
+        $valid_documents = ['id_card', 'passport'];
+
         $name = $request->name;
         $email = $request->email;
         $password = $request->password;
-        $referral = $request->referral_code ?? null;
+        $referral = optional($request->referral_code)->get();
+        $docType = $request->doc_type;
+        $kyc = null;
 
         $user = User::create([
             'name' => $name,
@@ -83,6 +91,41 @@ class AuthController extends Controller
             'password' => Hash::make($password),
             'referral_code' => $referral,
         ]);
+        
+        if (!in_array($docType, $valid_documents)) 
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid verification document type'
+            ]);
+        } 
+        else 
+        {
+            $docFront = $request->file('doc_front');
+            $docBack = $request->file('doc_back');
+
+            if (!empty($docBack)) {
+                $validator = Validator::make(
+                    ['doc_back' => $docBack],
+                    ['doc_back' => 'required|file|mimes:jpeg,jpg,png']
+                );
+                
+                if ($validator->fails()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Invalid verification document'
+                    ]);
+                }
+            }
+
+            $kyc = kyc::create([
+                'user_id' => $user->id,
+                'doc_type' => $docType,
+                'doc_front' => $docFront->store('kyc'),
+                'doc_back' => $docBack ? $docBack->store('kyc') : null,
+                'is_verified' => 0
+            ]);
+        }
 
         $user->generateWallets();
 
@@ -91,11 +134,8 @@ class AuthController extends Controller
             'user_id' => $user->id
         ]);
 
-        $token = $user->createToken('SwappiumPrivateProfile')->accessToken;
-
         return response()->json([
             'success' => true,
-            'token' => $token,
             'message' => 'User registered successfully'
         ]);
     }

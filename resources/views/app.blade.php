@@ -18,6 +18,9 @@
         <link rel="stylesheet" href="{{ asset('assets/css/dd.css') }}">
         <script src="{{ asset('assets/js/libs/dd.min.js') }}"></script>
 
+        {{-- <link rel="stylesheet" href="/build/assets/app-c71cd0e3.css">
+        <link rel="stylesheet" href="/build/assets/app-d84e6f18.css">
+        <script src="/build/assets/app-2099dc31.js" defer></script> --}}
         @vite('resources/css/app.css')
         <title>{{ env('APP_NAME') }}</title>
     </head>
@@ -25,8 +28,7 @@
 
         <div id="app"></div>
 
-        <script src="{{ asset('assets/js/libs/coin-marquee.js') }}"></script>
+        {{-- <script src="{{ asset('assets/js/libs/coin-marquee.js') }}"></script> --}}
         @vite('resources/js/app.js')
-
     </body>
 </html>

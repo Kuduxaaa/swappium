@@ -20,6 +20,9 @@ class WhitebitPrivate extends WhitebitPublic
         ];
 
         $response = parent::makeRequest($endpoint, true, $data, 'POST');
+
+        // print_r($response);
+
         return json_decode($response, true);
     }
 

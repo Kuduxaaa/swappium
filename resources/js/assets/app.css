@@ -172,7 +172,7 @@ body {
 }
 
 header {
-    padding-bottom: 131px;
+    padding-bottom: 86px;
 }
 
 .section {
@@ -235,6 +235,9 @@ header {
     min-width: auto !important;
 }
 
+.swal2-styled.swal2-confirm {
+    background-color: #4538d2 !important;
+}
 
 h1,
 h2,

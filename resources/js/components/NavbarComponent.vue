@@ -27,6 +27,12 @@
                     <router-link class="action-link" :to="(isLogedin) ? '/console' : '/auth/register'">
                         <button class="btn btn-primary">Get started</button>
                     </router-link>
+
+                    <div class="change-lang">
+                        <select v-model="currentLang" id="language" @change="changeLanguage">
+                            <option v-for="locale in availableLangs" :value="locale" :selected="currentLang === locale">{{ locale.toUpperCase() }}</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
@@ -34,19 +40,40 @@
 </template>
 
 <script>
-    export default {
-        name: "NavbarComponent",
+import store from '../store';
+import localize from '../i18n/localize';
+import { ref } from 'vue';
 
-        data() {
-            return {
-                isLogedin: null
-            }
-        },
+export default {
+    name: "NavbarComponent",
 
-        created() {
-            this.isLogedin = this.$auth.check();
+    data() {
+        return {
+            isLogedin: null,
+            availableLangs: [],
+            currentLang: ref('en')
         }
+    },
+
+    mixins: [localize],
+    methods: {
+        changeLanguage(event) {
+            let lang = event.target.value;
+            
+            this.$i18n.locale = lang
+            store.commit('setLocale', lang);
+        }
+    },
+
+    created() {
+        this.isLogedin = this.$auth.check();
+
+        this.currentLang = this.$i18n.locale;
+        this.availableLangs = this.$i18n.availableLocales;
+        
+        console.log()
     }
+}
 </script>
 
 <style scoped>
@@ -63,9 +90,21 @@
 
     padding: 12px;
     position: fixed;
-    margin-top: 38px;
     width: 100%;
     z-index: 9348923;
+}
+
+select#language {
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    height: 100%;
+    margin-left: 18px;
+}
+
+option {
+    color: #000;
 }
 
 .navbar-toggler:focus {

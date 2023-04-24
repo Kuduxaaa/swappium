@@ -1,0 +1,13 @@
+{
+    "welcome": "is the best",
+    "home_description": "Welcome to Swappium, the premier platform for buying, selling, and trading cryptocurrencies. With our advanced technology and user-friendly interface, managing your digital assets has never been easier. Whether you're a seasoned trader or new to the world of crypto, Swappium has everything you need to succeed. Join us today and take control of your financial future",
+
+    "navbar_home": "Home",
+    "navbar_about": "About",
+    "navbar_privacy": "Privacy",
+    "navbar_call": "Call",
+
+    "login": "Login",
+    "register": "Register",
+    "get_started": "Get Started"
+}
