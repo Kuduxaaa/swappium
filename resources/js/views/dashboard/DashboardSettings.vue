@@ -287,7 +287,7 @@
                         for (let key in response) {
                             let ticker = response[key];
 
-                            if (ticker['can_withdraw']) {
+                            if (ticker['can_withdraw'] && ticker['can_deposit'] && ticker.hasOwnProperty('networks') && !ticker['is_memo']) {
                                 const option = ticker.name;
                                 const optionElement = document.createElement('option');
 

@@ -15,7 +15,7 @@
             </div>
 
             <div class="wallets">
-                <div class="wallet add-wallet" @click="addWallet">
+                <div class="wallet add-wallet" @click="addWallet" v-if="!tabPos">
                     <div class="container h-100">
                         <div class="row align-items-center h-100">
                             <div class="col-6 mx-auto">
@@ -31,8 +31,7 @@
                 
 
                 <div class="wallet" v-for="(wallet, key) in  wallets">
-                    <img v-bind:src="'/assets/img/icons/' + wallet.ticker.toLowerCase() + '_.png'" :alt="wallet.name"
-                        class="icon">
+                    <img v-lazy="{ src: '/assets/img/icons/' + wallet.ticker.toLowerCase() + '_.png', loading: '/assets/img/icons/loading.svg', error: '/assets/img/icons/err_.png' }" class="icon" />
 
                     <h5 class="mt-4 text-center">{{ wallet.name }}</h5>
                     <p class="text-secondary text-center">{{ wallet.amount }} {{ wallet.ticker }}</p>
@@ -73,7 +72,7 @@ export default {
             wallets: [],
             wallet_type: 'crypto',
             tabPos: false,
-            assets: []
+            assets: {}
         }
     },
 
@@ -266,20 +265,46 @@ export default {
         },
 
         addWallet() {
-            if (this.assets.length == 0) {
+            if (Object.keys(this.assets).length === 0) {
                 this.$api.getAssets().then(assets => {
-                    this.assets = assets;
-
-                    this.addWalletStepTwo();
+                    if (typeof assets === 'object') {
+                        for (const asset in assets) {
+                            if (assets.hasOwnProperty(asset) &&
+                                assets[asset].can_withdraw &&
+                                !assets[asset].is_memo &&
+                                assets[asset].can_deposit &&
+                                assets[asset].networks) {
+                                this.assets[asset] = assets[asset];
+                            }
+                        }
+                        
+                        this.addWalletStepTwo();
+                    } else {
+                        console.error("assets is not an object");
+                    }
                 }).catch(error => {
                     console.log(error);
                 });
             } else {
+                for (const asset in this.assets) {
+                    if (this.assets.hasOwnProperty(asset) &&
+                        this.assets[asset].can_withdraw &&
+                        !assets[asset].is_memo &&
+                        this.assets[asset].can_deposit &&
+                        this.assets[asset].networks) {
+                        this.assets[asset] = this.assets[asset];
+                    } else {
+                        delete this.assets[asset];
+                    }
+                }
                 this.addWalletStepTwo();
             }
         },
 
+
+
         addWalletStepTwo() {
+            console.log(this.assets)
             let select = document.createElement('select');
             select.setAttribute('name', 'ticker')
             select.style = 'width: 100%;background: #2c2f39;color: #fff;font-weight: 600;border: none;border-radius: 24px;padding: 19px 18px;-moz-appearance: none;-webkit-appearance: none;appearance: none;cursor: pointer;';
