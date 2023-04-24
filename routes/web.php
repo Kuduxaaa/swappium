@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/{any?}', function () {
     return view('app');
-})->where('any', '^(?!api)(?!pay).*$');
+})->where('any', '^(?!api)(?!pay)(?!storage).*$');
 
 Route::get('/pay/{transactionId}', [MerchantController::class, 'index'])->name('merchant');
 Route::post('/pay/{transactionId}', [MerchantController::class, 'process'])->name('merchant.process');

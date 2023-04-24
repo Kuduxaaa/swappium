@@ -20,6 +20,10 @@ class VerifyRequired
     {
         $user = $request->user();
 
+        if ($user->role >= 2) {
+            return $next($request);
+        }
+
         if (!$user) {
             return new Response(['success' => false, 'message' => 'Unauthorized!'], 401, [
                 'Content-Type' => 'application/json'

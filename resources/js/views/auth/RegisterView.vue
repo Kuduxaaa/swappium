@@ -88,19 +88,19 @@
 
                                 <form class="mt-4" method="post" @submit.prevent="next">
                                     <div class="form-group mb-3">
-                                        <input v-model="full_name" type="text" placeholder="Your full name" required="" autofocus="" class="form-control p-3 shadow-sm px-4">
+                                        <input v-model="full_name" type="text" placeholder="Your full name" autofocus="" class="form-control p-3 shadow-sm px-4">
                                     </div>
                                     
                                     <div class="form-group mb-3">
-                                        <input v-model="email" type="email" placeholder="Email address" required="" class="form-control p-3 shadow-sm px-4">
+                                        <input v-model="email" type="text" placeholder="Email address" class="form-control p-3 shadow-sm px-4">
                                     </div>
 
                                     <div class="form-group mb-3">
-                                        <input v-model="password" type="password" placeholder="Password" required="" class="form-control shadow-sm px-4 p-3 text-primary">
+                                        <input v-model="password" type="password" placeholder="Password" class="form-control shadow-sm px-4 p-3 text-primary">
                                     </div>
 
                                     <div class="form-group mb-3">
-                                        <input v-model="password_confirmation" type="password" placeholder="Confirm password" required="" class="form-control shadow-sm px-4 p-3 text-primary">
+                                        <input v-model="password_confirmation" type="password" placeholder="Confirm password" class="form-control shadow-sm px-4 p-3 text-primary">
                                     </div>
 
                                     <div class="form-group mb-3">
@@ -134,11 +134,11 @@ export default {
 
     data() {
         return {
-            email: ref(''),
-            password: ref(''),
-            password_confirmation: ref(''),
-            referral_code: ref(''),
-            full_name: ref(''),
+            email: ref(null),
+            password: ref(null),
+            password_confirmation: ref(null),
+            referral_code: ref(null),
+            full_name: ref(null),
             is_kyc: false,
             doc_type: null,
 
@@ -155,6 +155,51 @@ export default {
     
     methods: {
         next() {
+            const requiredFields = [
+                { field: 'full_name', error: 'Your full name is required!' },
+                { field: 'email', error: 'Email field is required!', email: true },
+                { field: 'password', error: 'Password field is required!', minLength: 8 },
+                { field: 'password_confirmation', error: 'Please confirm your password!' },
+            ];
+
+            for (const field of requiredFields) {
+                if (!this[field.field]) {
+                    this.$snackbar.add({
+                        type: 'error',
+                        text: field.error,
+                    });
+
+                    return;
+                }
+
+                if (field.email && !/\S+@\S+\.\S+/.test(this[field.field])) {
+                    this.$snackbar.add({
+                        type: 'error',
+                        text: 'Invalid email address!',
+                    });
+
+                    return;
+                }
+
+                if (field.minLength && this[field.field].length < field.minLength) {
+                    this.$snackbar.add({
+                        type: 'error',
+                        text: `Password should be at least ${field.minLength} characters long!`,
+                    });
+
+                    return;
+                }
+            }
+
+            if (this.password !== this.password_confirmation) {
+                this.$snackbar.add({
+                    type: 'error',
+                    text: 'Entered passwords don\'t match!',
+                });
+
+                return;
+            }
+
             this.is_kyc = true;
         },
 
@@ -187,8 +232,35 @@ export default {
             formData.append('referral_code', this.referral_code);
             formData.append('name', this.full_name);
 
+            this.$snackbar.add({
+                type: 'info',
+                text: 'Request sent. Please wait...'
+            })
+
             this.$axios.post('auth/register', formData).then(response => {
-                console.log(response);
+                if (!response.data.success) {
+                    let message = 'Something went wrong';
+
+                    if (response.data.hasOwnProperty('message')) {
+                        message = response.data.message;
+                    }
+
+                    this.$snackbar.add({
+                        type: 'error',
+                        text: message
+                    });
+
+                    return;
+                }
+
+                if (response.data.success) {
+                    this.$snackbar.add({
+                        type: 'success',
+                        text: 'Successfully registered!'
+                    });
+
+                    this.$router.push('/auth/login');
+                }
 
             }).catch(error => {
                 if (error.response.data.hasOwnProperty('errors')) {
@@ -204,7 +276,7 @@ export default {
 
                             this.$snackbar.add({
                                 type: 'error',
-                                text: `${key.charAt(0).toUpperCase() + key.slice(1)}: ${obj[prop]}`
+                                text: obj[prop]
                             });
                         }
                     }
@@ -221,20 +293,7 @@ export default {
             //     'name': this.full_name
                 
             // }).then(response => {
-            //     if (!response.data.success) {
-            //         let message = 'Something went wrong';
-
-            //         if (response.data.hasOwnProperty('message')) {
-            //             message = response.data.message;
-            //         }
-
-            //         this.$snackbar.add({
-            //             type: 'error',
-            //             text: message
-            //         });
-
-            //         return;
-            //     }
+            //     
 
             //     if (response.data.success && response.data.hasOwnProperty('token')) {
             //         this.$snackbar.add({

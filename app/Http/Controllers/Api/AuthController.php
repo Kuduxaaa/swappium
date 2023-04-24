@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\kyc;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use App\Models\ReferralCode;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use App\Models\kyc;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -121,8 +122,8 @@ class AuthController extends Controller
             $kyc = kyc::create([
                 'user_id' => $user->id,
                 'doc_type' => $docType,
-                'doc_front' => $docFront->store('kyc'),
-                'doc_back' => $docBack ? $docBack->store('kyc') : null,
+                'doc_front' => Storage::url($docFront->store('public/kyc')),
+                'doc_back' => $docBack ? Storage::url($docBack->store('public/kyc')) : null,
                 'is_verified' => 0
             ]);
         }
