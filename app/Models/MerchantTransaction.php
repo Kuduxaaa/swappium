@@ -16,6 +16,8 @@ class MerchantTransaction extends Model
         'user_id',
         'status',
         'amount',
-        'ticker'
+        'ticker',
+        'uniqueId',
+        'details'
     ];
 }

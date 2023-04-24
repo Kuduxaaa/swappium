@@ -22,6 +22,9 @@ return new class extends Migration
             $table->string('status')->default('pending');
             $table->decimal('amount');
             $table->string('ticker');
+            $table->string('uniqueId');
+            $table->text('details')->nullable();
+
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();

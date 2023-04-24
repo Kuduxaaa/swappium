@@ -12,6 +12,7 @@ use App\Models\MerchantSettings;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Redirector;
 use App\Models\MerchantTransaction;
+use App\Models\UserWallet;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\View\Factory;
@@ -64,7 +65,7 @@ class MerchantController extends Controller
 
         return response()->json([
             'success' => true,
-            'link' => env('APP_URL') . 'pay/' . $generated->unique_slug,
+            'link' => env('APP_URL') . '/pay/' . $generated->unique_slug,
             'transaction_id' => $generated->unique_slug
         ]);
     }
@@ -124,19 +125,42 @@ class MerchantController extends Controller
 
         MerchantTransaction::create([
             'merchant_id' => $merchantSettings->merchant_id,
-            'status' => 'pending',
+            'status' => 'Pending',
             'amount' => $amount,
             'ticker' => $ticker,
-            'user_id' => $user->id
+            'user_id' => $user->id,
+            'uniqueId' => $transactionId,
+            'details' => null
         ]);
+        
+        $output = [];
+        $userWallet = UserWallet::where('user_id', $user->id)->where('ticker', $ticker)->first();
 
-        $data = WhitebitPrivate::withdrawCrypto($ticker, $amount, $address, $network, $user->email, $id);
+        if (is_null($userWallet)) {
+            $user->generateWallets([$ticker]);
+            $userWallet = UserWallet::where('user_id', $user->id)->where('ticker', $ticker)->first();
 
-        if (array_key_exists('errors', $data))
+            if (!$userWallet) {
+                $output['success'] = false;
+                $output['message'] = 'Something went wrong';
+
+                return $output;
+            }
+        }
+
+        if ($userWallet->amount >= ($amount + ((0.1 / 100) * $amount))) 
         {
-            return response()->json([
-               'success' => false,
-               'data' => $data
+            $data = WhitebitPrivate::withdrawCrypto($ticker, $amount, $address, $network, $transactionId);
+            
+            MerchantTransaction::where('uniqueId', $transactionId)->update([
+                'status' => (empty($data)) ? 'Success' : $data['message'] ?? 'Failed',
+                'details' => json_encode($data ?? [])
+            ]);
+        } 
+        else 
+        {
+            MerchantTransaction::where('uniqueId', $transactionId)->update([
+                'status' => 'User dont have enough funds'
             ]);
         }
 
@@ -160,9 +184,15 @@ class MerchantController extends Controller
             ]);
         }
 
+        $white_response = WhitebitPrivate::getHistory(0, 1, $merchantSettings['unique_slug'])['records'] ?? []; // :D
+
+        if (empty($white_response)) {
+            $white_response = MerchantTransaction::select(['status', 'amount', 'ticker', 'created_at', 'uniqueId'])->where('uniqueId', $transactionId)->first();
+        } 
+
         return [
             'success' => true,
-            'details' => WhitebitPrivate::getHistory(0, 1, $merchantSettings['unique_slug'])['records'] ?? []
+            'details' => $white_response
         ];
     }
 

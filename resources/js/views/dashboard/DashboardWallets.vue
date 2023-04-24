@@ -304,7 +304,6 @@ export default {
 
 
         addWalletStepTwo() {
-            console.log(this.assets)
             let select = document.createElement('select');
             select.setAttribute('name', 'ticker')
             select.style = 'width: 100%;background: #2c2f39;color: #fff;font-weight: 600;border: none;border-radius: 24px;padding: 19px 18px;-moz-appearance: none;-webkit-appearance: none;appearance: none;cursor: pointer;';

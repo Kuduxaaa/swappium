@@ -62,7 +62,7 @@
                                 <div class="flex field">
                                     <div class="input-group">
                                         <span>Price</span>
-                                        <input type="text" autocomplete="off" class="input" :value="last_price">
+                                        <input type="text" autocomplete="off" class="input" :value="tradeprice">
                                     </div>
 
                                     <div class="input-group mt-3">
